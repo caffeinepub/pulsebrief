@@ -1,0 +1,539 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 19,
+  "summary": "PulseBrief: a modern dark, premium fintech-style clickable UX prototype for an AI-powered daily market brief + simplified portfolio health guardian (informational only; not financial advice), now including refined copy (“Today’s Market Pulse”), score interpretation labels, improved sign-in CTA microcopy, and a display-only “PulseBrief Pro” soft paywall (no payments) gating personalization/saving/alerts/history behind an “Upgrade to Pro” CTA while keeping demo viewing free.",
+  "architectural_notes": [
+    "Prototype only: clickable UX/UI draft for validation, not a production system",
+    "Use placeholder AI actions for generating briefs and portfolio analysis (no real data required)",
+    "Include persistent compliance disclaimer: “Informational only. Not financial advice.” and avoid trade instructions/return promises",
+    "Design direction: dark, premium, minimal, high-trust fintech; emphasize scores and concise summaries; include simple chart placeholders",
+    "Design principle update: emphasize clarity and speed over detail (especially on Today Brief).",
+    "Standardize score component UI across pages: consistent layout and copy pattern (value, label, one-sentence rationale).",
+    "Avoid complex charts; prioritize clear summaries and minimal visualizations.",
+    "Sign-in/Profile UX must never be a dead-end: provide an explicit exit path back to home and allow modal dismissal (outside click/ESC) if implemented as a modal.",
+    "Header PulseBrief logo should be a consistent global navigation element that always returns to the home screen.",
+    "Copy update: Today Brief primary headline label should be “Today’s Market Pulse” (replacing prior “What matters today”)."
+  ],
+  "known_issues": [
+    "Users can get stuck on the Sign-in/Profile view without an obvious way to return home or dismiss the sign-in (dead-end UX).",
+    "Deployment process encountered an error; user requested a non-deployed Draft Preview build instead of a live redeploy.",
+    "User request/constraint: do not create a new draft or rebuild; keep the currently deployed draft as-is and apply UI copy-only adjustments."
+  ],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-create-the-pulsebrief-frontend-information-architecture-with-client-side-routing-and-a-consistent-app-shell-top-nav-or-side-nav-that-links-to-landing-sign-in-profile-today-s-brief-research-mode-portfolio-alerts-rules-and-library-history",
+      "title": "Create the PulseBrief frontend information architecture with client-side routing and a consistent app shell (top nav or side nav) that links to: Landing, Sign-in/Profile, Today’s Brief, Research Mode, Portfolio, Alerts & Rules, and Library/History.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-dark-premium-minimal-high-trust-fintech-visual-theme-not-blue-purple-forward-with-consistent-typography-spacing-and-component-styling-across-the-app-prioritize-clarity-of-scores-summaries-and-primary-ctas-while-avoiding-clutter",
+      "title": "Apply a dark, premium, minimal, high-trust fintech visual theme (not blue/purple-forward) with consistent typography, spacing, and component styling across the app; prioritize clarity of scores, summaries, and primary CTAs while avoiding clutter.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-persistent-compliance-disclaimer-banner-or-footer-across-all-pages-including-dashboards-that-reads-exactly-informational-only-not-financial-advice-and-ensure-no-ui-copy-implies-guaranteed-returns-or-trade-instructions",
+      "title": "Implement a persistent compliance disclaimer banner or footer across all pages (including dashboards) that reads exactly: “Informational only. Not financial advice.” and ensure no UI copy implies guaranteed returns or trade instructions.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-landing-page-for-brand-pulsebrief-with-the-exact-headline-and-subtext-two-cta-buttons-labeled-view-today-s-brief-and-add-portfolio-that-navigate-to-the-corresponding-pages-and-a-disclaimer-snippet-informational-only-not-financial-advice",
+      "title": "Build the Landing page for brand “PulseBrief” with the exact headline and subtext, two CTA buttons labeled “View Today’s Brief” and “Add Portfolio” that navigate to the corresponding pages, and a disclaimer snippet: “Informational only — not financial advice.”",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-sign-in-profile-prototype-page-with-an-email-sign-in-mock-no-real-auth-required-and-profile-settings-for-timezone-and-preferred-topics-crypto-macro-geopolitics-tech-store-the-selected-settings-so-they-persist-across-refreshes",
+      "title": "Create a Sign-in/Profile prototype page with an email sign-in mock (no real auth required) and profile settings for timezone and preferred topics (Crypto, Macro, Geopolitics, Tech). Store the selected settings so they persist across refreshes.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-today-brief-dashboard-page-showing-current-date-a-5-bullet-what-matters-today-summary-five-numeric-scores-0-10-with-tooltips-market-risk-bullish-bearish-volatility-stress-liquidity-conditions-noise-vs-signal-a-key-drivers-list-3-items-a-what-to-watch-next-list-3-items-and-a-generate-today-s-brief-button-that-triggers-a-placeholder-generation-flow",
+      "title": "Build the Today Brief Dashboard page showing: current date, a 5-bullet “What matters today” summary, five numeric scores (0–10) with tooltips (Market Risk, Bullish/Bearish, Volatility/Stress, Liquidity/Conditions, Noise vs Signal), a “Key drivers” list (3 items), a “What to watch next” list (3 items), and a “Generate Today’s Brief” button that triggers a placeholder generation flow.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-research-mode-page-with-a-search-input-for-topics-a-grid-list-of-topic-cards-and-a-structured-research-output-view-containing-summary-key-points-risks-catalysts-and-a-score-0-10-with-justification-include-a-save-to-library-button-that-stores-the-research-item-for-later-viewing",
+      "title": "Implement Research Mode page with a search input for topics, a grid/list of topic cards, and a structured research output view containing: Summary, Key points, Risks, Catalysts, and a Score (0–10) with justification; include a “Save to Library” button that stores the research item for later viewing.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-portfolio-page-allowing-the-user-to-add-assets-manually-ticker-name-set-allocation-per-asset-optionally-set-average-entry-price-and-time-horizon-trader-6-months-2-years-and-display-a-portfolio-health-panel-with-the-specified-metrics-plus-top-3-risks-and-top-3-opportunities-include-a-run-portfolio-analysis-button-that-generates-placeholder-analysis-results-and-persists-a-portfolio-snapshot-to-library-history",
+      "title": "Build the Portfolio page allowing the user to add assets manually (ticker/name), set allocation % per asset, optionally set average entry price and time horizon (Trader / 6 months / 2 years), and display a Portfolio Health panel with the specified metrics plus “Top 3 risks” and “Top 3 opportunities”; include a “Run Portfolio Analysis” button that generates placeholder analysis results and persists a portfolio snapshot to Library/History.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-alerts-rules-page-featuring-a-rule-builder-ui-for-threshold-based-alerts-including-example-conditions-frequency-selection-daily-weekly-an-active-rules-list-and-a-test-alert-button-that-produces-an-in-app-preview-of-what-would-trigger-no-real-notifications",
+      "title": "Create Alerts & Rules page featuring a rule-builder UI for threshold-based alerts (including example conditions), frequency selection (daily/weekly), an “Active rules” list, and a “Test alert” button that produces an in-app preview of what would trigger (no real notifications).",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-library-history-page-that-lists-saved-briefs-by-date-saved-research-topics-and-saved-portfolio-snapshots-with-simple-filters-for-date-range-topic-and-asset-enable-viewing-details-of-a-saved-item",
+      "title": "Implement Library/History page that lists: saved briefs by date, saved research topics, and saved portfolio snapshots, with simple filters for date range, topic, and asset; enable viewing details of a saved item.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-frontend-data-flow-use-react-query-to-load-save-all-persisted-entities-profile-briefs-research-items-portfolio-snapshots-rules-through-the-backend-actor-and-show-appropriate-loading-empty-states-for-each-page",
+      "title": "Frontend data flow: use React Query to load/save all persisted entities (profile, briefs, research items, portfolio snapshots, rules) through the backend actor, and show appropriate loading/empty states for each page.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-simple-chart-placeholders-no-real-data-required-to-the-today-brief-and-portfolio-pages-that-visually-reinforce-the-numeric-scoring-panels-without-implying-trading-signals",
+      "title": "Add simple chart placeholders (no real data required) to the Today Brief and Portfolio pages that visually reinforce the numeric scoring panels without implying trading signals.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-generated-brand-assets-to-the-frontend-and-display-them-in-the-ui-a-pulsebrief-wordmark-logo-and-a-favicon-store-them-as-static-files-under-frontend-public-assets-generated-and-use-them-on-the-landing-page-and-app-shell",
+      "title": "Add generated brand assets to the frontend and display them in the UI: a PulseBrief wordmark logo and a favicon; store them as static files under frontend/public/assets/generated and use them on the Landing page and app shell.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-today-s-brief-dashboard-the-default-home-screen-for-signed-in-users-when-a-user-with-an-active-prototype-session-navigates-to-the-root-path-redirect-them-to-brief-when-no-prototype-session-is-present-keep-showing-the-landing-page-at",
+      "title": "Make the Today’s Brief dashboard the default home screen for signed-in users: when a user with an active prototype session navigates to the root path \"/\", redirect them to \"/brief\"; when no prototype session is present, keep showing the Landing page at \"/\".",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-prominent-quick-daily-brief-section-at-the-top-of-the-today-s-brief-page-designed-to-be-read-in-under-60-seconds-containing-1-exactly-3-key-points-2-exactly-3-numeric-scores-0-10-with-short-one-sentence-explanations-and-3-one-short-paragraph-titled-labelled-exactly-what-matters-most-today",
+      "title": "Add a prominent \"Quick Daily Brief\" section at the top of the Today’s Brief page designed to be read in under 60 seconds, containing: (1) exactly 3 key points, (2) exactly 3 numeric scores (0–10) with short one-sentence explanations, and (3) one short paragraph titled/labelled exactly \"What matters most today\".",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-standardize-score-presentation-across-the-app-by-introducing-a-single-reusable-score-ui-pattern-component-that-renders-at-minimum-numeric-value-0-10-clear-label-and-a-one-sentence-explanation-why-this-score-today-apply-this-standardized-score-ui-to-all-0-10-scores-shown-on-the-today-s-brief-page-and-any-0-10-score-blocks-on-the-portfolio-page",
+      "title": "Standardize score presentation across the app by introducing a single reusable score UI pattern/component that renders, at minimum: numeric value (0–10), clear label, and a one-sentence explanation (\"Why this score today\"); apply this standardized score UI to all 0–10 scores shown on the Today’s Brief page and any 0–10 score blocks on the Portfolio page.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-compact-yesterday-vs-today-comparison-widget-to-the-today-s-brief-page-that-compares-yesterday-s-scores-to-today-s-scores-and-displays-the-change-for-each-compared-score-with-an-arrow-indicating-direction-up-down-and-a-numeric-delta-if-no-prior-day-brief-exists-show-an-empty-state-message-in-the-widget-in-english",
+      "title": "Add a compact \"Yesterday vs Today\" comparison widget to the Today’s Brief page that compares yesterday’s scores to today’s scores and displays the change for each compared score with an arrow indicating direction (up/down) and a numeric delta; if no prior day brief exists, show an empty-state message in the widget in English.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refine-the-portfolio-page-to-focus-on-a-simplified-portfolio-health-check-view-that-prioritizes-clear-summaries-over-detail-including-1-one-main-portfolio-health-score-0-100-displayed-prominently-and-2-exactly-3-short-insights-labeled-main-risk-main-strength-and-what-to-watch-remove-or-hide-complex-extra-chart-placeholder-panels-so-the-page-emphasizes-clarity-and-speed",
+      "title": "Refine the Portfolio page to focus on a simplified \"Portfolio Health Check\" view that prioritizes clear summaries over detail, including: (1) one main \"Portfolio Health Score\" (0–100) displayed prominently, and (2) exactly 3 short insights labeled \"Main risk\", \"Main strength\", and \"What to watch\"; remove or hide complex/extra chart placeholder panels so the page emphasizes clarity and speed.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-simplify-the-alerts-rules-page-to-present-alerts-as-a-straightforward-list-of-predefined-rules-with-toggles-no-threshold-frequency-rule-builder-ui-including-at-least-these-toggleable-alert-rules-high-market-risk-increased-volatility-and-portfolio-health-drop-preserve-persistence-of-toggle-states-using-the-existing-backend-actor-alert-rules-storage",
+      "title": "Simplify the Alerts & Rules page to present alerts as a straightforward list of predefined rules with toggles (no threshold/frequency rule builder UI), including at least these toggleable alert rules: \"High market risk\", \"Increased volatility\", and \"Portfolio health drop\"; preserve persistence of toggle states using the existing backend actor alert rules storage.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-visible-exit-action-on-the-sign-in-profile-settings-card-so-users-can-always-leave-the-sign-in-profile-view-without-completing-sign-in-use-one-of-these-exact-english-labels-back-to-home-or-return-to-pulsebrief-the-action-must-navigate-to-the-home-route",
+      "title": "Add a visible exit action on the Sign In / Profile Settings card so users can always leave the sign-in/profile view without completing sign-in. Use one of these exact English labels: \"Back to Home\" or \"Return to PulseBrief\". The action must navigate to the home route \"/\".",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-pulsebrief-wordmark-logo-in-all-headers-clickable-and-always-navigable-to-the-home-route-including-the-main-authenticated-appnav-header-the-landing-page-header-and-the-profile-page-header",
+      "title": "Make the PulseBrief wordmark/logo in all headers clickable and always navigable to the home route \"/\" (including: the main authenticated AppNav header, the Landing page header, and the Profile page header).",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-if-the-sign-in-experience-is-presented-as-a-modal-anywhere-in-the-app-ensure-it-can-be-dismissed-without-completing-sign-in-by-a-clicking-outside-the-modal-and-b-pressing-the-esc-key-returning-the-user-to-the-prior-non-modal-view-without-trapping-them",
+      "title": "If the sign-in experience is presented as a modal anywhere in the app, ensure it can be dismissed without completing sign-in by (a) clicking outside the modal and (b) pressing the ESC key, returning the user to the prior non-modal view without trapping them.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refine-the-today-s-brief-page-so-the-primary-brief-content-is-a-strict-60-second-read-with-this-exact-structure-and-english-headings-1-headline-text-exactly-what-matters-today-2-exactly-3-bullet-points-each-capped-at-12-words-3-exactly-3-key-scores-0-10-each-with-a-one-line-explanation-and-4-one-short-paragraph-labeled-exactly-bottom-line-avoid-long-text-and-prioritize-speed-and-clarity",
+      "title": "Refine the Today’s Brief page so the primary brief content is a strict “60-second read” with this exact structure and English headings: (1) Headline text exactly “What matters today”, (2) exactly 3 bullet points, each capped at 12 words, (3) exactly 3 key scores (0–10) each with a one-line explanation, and (4) one short paragraph labeled exactly “Bottom line”. Avoid long text and prioritize speed and clarity.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-standardized-score-presentation-pattern-is-used-consistently-anywhere-scores-are-shown-across-today-s-brief-portfolio-and-alerts-each-score-must-display-1-numeric-value-2-clear-label-and-3-one-sentence-explanation-prefixed-with-why-this-score-today",
+      "title": "Ensure the standardized score presentation pattern is used consistently anywhere scores are shown across Today’s Brief, Portfolio, and Alerts: each score must display (1) numeric value, (2) clear label, and (3) one-sentence explanation prefixed with “Why this score today”.",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-alerts-page-to-present-exactly-these-three-guardian-style-toggle-rules-using-these-exact-english-labels-high-market-risk-rising-volatility-and-portfolio-health-deterioration-each-rule-must-include-a-single-sentence-explanation-in-english",
+      "title": "Update the Alerts page to present exactly these three guardian-style toggle rules, using these exact English labels: “High market risk”, “Rising volatility”, and “Portfolio health deterioration”. Each rule must include a single-sentence explanation in English.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-allow-unauthenticated-users-to-navigate-to-the-today-s-brief-route-brief-and-the-portfolio-route-portfolio-without-being-redirected-to-the-profile-sign-in-page",
+      "title": "Allow unauthenticated users to navigate to the Today’s Brief route (\"/brief\") and the Portfolio route (\"/portfolio\") without being redirected to the Profile/Sign-in page.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-clear-demo-state-indicator-to-today-s-brief-and-portfolio-health-pages-when-the-user-is-unauthenticated-and-label-the-content-exactly-as-sample-preview",
+      "title": "Add a clear demo-state indicator to Today’s Brief and Portfolio Health pages when the user is unauthenticated, and label the content exactly as “Sample / Preview”.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-demo-version-of-today-s-brief-for-unauthenticated-users-that-uses-sample-data-and-does-not-require-backend-data-loading",
+      "title": "Implement a demo version of Today’s Brief for unauthenticated users that uses sample data and does not require backend data loading.",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-require-sign-in-only-when-the-user-attempts-to-generate-a-real-daily-brief-from-today-s-brief-in-demo-mode-replace-adjust-the-generate-regenerate-action-to-prompt-sign-in-instead-of-mutating-backend-state",
+      "title": "Require sign-in only when the user attempts to generate a real daily brief from Today’s Brief; in demo mode, replace/adjust the generate/regenerate action to prompt sign-in instead of mutating backend state.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-demo-version-of-portfolio-health-for-unauthenticated-users-that-displays-an-example-portfolio-health-result-and-optionally-example-holdings-without-requiring-backend-persistence",
+      "title": "Implement a demo version of Portfolio Health for unauthenticated users that displays an example portfolio health result (and optionally example holdings) without requiring backend persistence.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-require-sign-in-only-when-the-user-attempts-to-save-a-portfolio-in-demo-mode-prevent-portfolio-saving-actions-from-mutating-backend-state-and-prompt-sign-in-instead",
+      "title": "Require sign-in only when the user attempts to save a portfolio; in demo mode, prevent portfolio-saving actions from mutating backend state and prompt sign-in instead.",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-require-sign-in-only-when-the-user-attempts-to-set-alerts-or-rules-keep-alerts-rules-gated-such-that-unauthenticated-users-cannot-toggle-activate-rules-without-signing-in",
+      "title": "Require sign-in only when the user attempts to set alerts or rules; keep Alerts & Rules gated such that unauthenticated users cannot toggle/activate rules without signing in.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-rename-the-primary-today-s-brief-module-headline-text-from-what-matters-today-to-today-s-market-pulse-anywhere-it-appears-in-the-today-s-brief-60-second-read-ui",
+      "title": "Rename the primary Today’s Brief module headline text from “What matters today” to “Today’s Market Pulse” anywhere it appears in the Today’s Brief 60-second read UI.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-short-interpretation-labels-next-to-scores-throughout-the-app-s-standardized-score-ui-e-g-neutral-elevated-cautious-so-each-rendered-score-shows-an-additional-concise-interpretation-label-adjacent-to-the-numeric-score-presentation",
+      "title": "Add short interpretation labels next to scores throughout the app’s standardized score UI (e.g., Neutral, Elevated, Cautious) so each rendered score shows an additional concise interpretation label adjacent to the numeric score presentation.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-under-any-sign-in-to-save-call-to-action-in-the-ui-add-the-line-takes-less-than-30-seconds-displayed-directly-beneath-the-cta",
+      "title": "Under any “Sign in to save” call-to-action in the UI, add the line “Takes less than 30 seconds.” displayed directly beneath the CTA.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-display-only-pulsebrief-pro-plan-ui-that-shows-the-price-19-month-and-lists-the-pro-unlocks-personalized-daily-brief-save-portfolio-activate-alerts-view-history",
+      "title": "Add a display-only “PulseBrief Pro” plan UI that shows the price “£19/month” and lists the Pro unlocks: Personalized daily brief, Save portfolio, Activate alerts, View history.",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-gate-pro-unlocked-features-behind-an-upgrade-to-pro-cta-for-non-pro-users-personalized-daily-brief-generation-saving-a-portfolio-activating-alerts-toggling-alert-rules-and-viewing-history",
+      "title": "Gate Pro-unlocked features behind an “Upgrade to Pro” CTA for non-Pro users: Personalized daily brief generation, saving a portfolio, activating alerts (toggling alert rules), and viewing history.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-soft-paywall-ux-allow-users-to-view-demo-content-freely-but-when-attempting-to-generate-a-real-brief-or-save-a-portfolio-while-not-eligible-not-pro-show-the-message-upgrade-to-pulsebrief-pro-to-personalize-and-save-your-insights-and-avoid-aggressive-language",
+      "title": "Implement a soft paywall UX: allow users to view demo content freely, but when attempting to generate a real brief or save a portfolio while not eligible (not Pro), show the message “Upgrade to PulseBrief Pro to personalize and save your insights.” and avoid aggressive language.",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-access-to-the-draft-preview-so-the-user-can-test-the-app-including-clear-english-instructions-for-how-to-open-and-navigate-the-preview-build",
+      "title": "Provide access to the Draft Preview so the user can test the app, including clear English instructions for how to open and navigate the preview build.",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-library-history-page-route-library-component-frontend-src-pages-libraryhistorypage-tsx-so-that-library-is-treated-as-a-pro-only-area-when-a-user-who-is-not-pro-accesses-the-page-do-not-show-any-demo-content-or-saved-content-ui-no-tabs-lists-filters-or-details-dialog-instead-show-a-single-empty-state-message-with-the-exact-text-your-saved-briefs-and-portfolio-history-will-appear-here-and-provide-a-single-cta-button-labeled-exactly-upgrade-to-pulsebrief-pro",
+      "title": "Update the Library/History page (route \"/library\", component \"frontend/src/pages/LibraryHistoryPage.tsx\") so that Library is treated as a Pro-only area: when a user who is not Pro accesses the page, do not show any demo content or saved content UI (no tabs, lists, filters, or details dialog). Instead, show a single empty-state message with the exact text “Your saved briefs and portfolio history will appear here.” and provide a single CTA button labeled exactly “Upgrade to PulseBrief Pro”.",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-routing-so-unauthenticated-logged-out-users-can-navigate-to-the-library-route-library-without-being-redirected-to-the-profile-sign-in-page-and-instead-see-a-dedicated-informational-empty-state",
+      "title": "Update routing so unauthenticated (logged-out) users can navigate to the Library route \"/library\" without being redirected to the Profile/Sign-in page, and instead see a dedicated informational empty state.",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-the-library-page-frontend-src-pages-libraryhistorypage-tsx-when-the-user-is-logged-out-render-an-informative-empty-state-with-exactly-this-english-copy-and-two-ctas-title-your-library-text-save-your-daily-briefs-track-portfolio-health-over-time-and-build-your-personal-market-history-primary-cta-button-label-sign-in-to-access-library-secondary-cta-visually-subtle-label-upgrade-to-pulsebrief-pro",
+      "title": "On the Library page (frontend/src/pages/LibraryHistoryPage.tsx), when the user is logged out, render an informative empty state with exactly this English copy and two CTAs: Title: \"Your Library\"; Text: \"Save your daily briefs, track portfolio health over time, and build your personal market history.\"; Primary CTA button label: \"Sign in to access Library\"; Secondary CTA (visually subtle) label: \"Upgrade to PulseBrief Pro\".",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-wire-the-logged-out-library-empty-state-ctas-to-existing-navigation-clicking-sign-in-to-access-library-must-take-the-user-to-the-existing-profile-sign-in-page-route-profile-clicking-upgrade-to-pulsebrief-pro-must-navigate-to-an-existing-in-app-location-that-presents-the-current-pro-upgrade-experience-use-an-existing-route-do-not-add-a-new-page",
+      "title": "Wire the logged-out Library empty-state CTAs to existing navigation: clicking \"Sign in to access Library\" must take the user to the existing Profile/Sign-in page (route \"/profile\"). Clicking \"Upgrade to PulseBrief Pro\" must navigate to an existing in-app location that presents the current Pro upgrade experience (use an existing route; do not add a new page).",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-preserve-the-existing-pro-only-locked-library-empty-state-experience-for-signed-in-users-who-are-not-pro-as-currently-implemented-including-the-existing-exact-message-text-and-upgrade-cta-behavior-only-change-the-logged-out-state-to-the-new-informative-empty-state",
+      "title": "Preserve the existing Pro-only locked Library empty-state experience for signed-in users who are not Pro (as currently implemented), including the existing exact message text and Upgrade CTA behavior; only change the logged-out state to the new informative empty state.",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Landing page for PulseBrief with headline/subtext, CTAs (View Today’s Brief, Add Portfolio), and disclaimer snippet",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Sign-in/Profile prototype: email sign-in mock and profile settings (timezone, preferred topics)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Today Brief Dashboard: daily brief with date, 5-bullet summary, multiple 0–10 scores w/ tooltips, key drivers, what to watch, and Generate Brief placeholder action",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Research Mode: search, topic cards, structured output (summary/key points/risks/catalysts/score) and Save to Library",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Portfolio page: manual asset entry, allocations, optional entry price & horizon, portfolio health panel w/ scores, top risks/opportunities, and Run Analysis placeholder action",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Alerts & Rules UI: rule builder (threshold-based), frequency (daily/weekly), active rules list, and Test Alert button (no real notifications)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Library/History: saved briefs by date, saved research topics, saved portfolio snapshots, and simple filters (date/topic/asset)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Backend: add a Motoko data model and persistence for prototype entities: Profile settings, Daily Briefs, Research items, Portfolio (current) and Portfolio snapshots, and Alert Rules; expose simple CRUD/query methods needed by the UI (list, get by id/date, create/save, delete).",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Make Today Brief dashboard the default home screen (initial route)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Add a prominent “Quick Daily Brief” section (readable in <60s): 3 key points, 3 scores with short explanations, and a short “What matters most today” paragraph",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Standardize score design across the app: each score shows 0–10 value, clear label, and one-sentence “Why this score today”; ensure consistent visual styling on Today Brief and Portfolio",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Add a small “Yesterday vs Today” comparison widget on Today Brief showing score changes with up/down arrows",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Refine Portfolio page into a simplified “Portfolio Health Check”: main Portfolio Health Score (0–100) plus 3 insights (main risk, main strength, what to watch); prioritize clear summaries over charts",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Simplify Alerts & Rules into a list of simple alert rules with toggles (e.g., High market risk, Increased volatility, Portfolio health drop); prioritize clarity over technical configuration",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Improve Sign-in/Profile UX to avoid dead-ends: add Back to Home button, allow exiting sign-in without completion, make header logo always navigate home, and if modal allow close via outside click or ESC",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Refine Today Brief into a strict “60-second read”: headline exactly “What matters today”, 3 bullets (max 12 words each), 3 key 0–10 scores with one-line explanations, and a short paragraph titled “Bottom line”; avoid long text and prioritize speed/clarity",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Extend the standardized score presentation component/visual style to any scores shown in Alerts as well (numeric value, clear label, and one-sentence “Why this score today”)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Update simplified Alerts toggles to use guardian-style labels and include a one-sentence explanation for each toggle: High market risk, Rising volatility, Portfolio health deterioration",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-29",
+      "summary": "Add unauthenticated demo/preview access: allow users to explore Today’s Brief (sample data) and Portfolio Health (example portfolio) without signing in; label demo content as “Sample / Preview”; require sign-in only when generating a real daily brief, saving a portfolio, or setting alerts/rules",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-30",
+      "summary": "Copy refinements: rename “What matters today” to “Today’s Market Pulse”; add short interpretation labels next to scores; add “Takes less than 30 seconds.” under any “Sign in to save” CTA",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-31",
+      "summary": "Add display-only “PulseBrief Pro” plan (£19/month) and gate Pro-unlocked features (Personalized daily brief, Save portfolio, Activate alerts, View history) behind an “Upgrade to Pro” CTA (no payment integration)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-32",
+      "summary": "Implement a soft paywall: allow demo content viewing freely; when attempting to generate a real brief or save a portfolio show message “Upgrade to PulseBrief Pro to personalize and save your insights.”; avoid aggressive language",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-37",
+      "summary": "Introduce a persisted Pro entitlement flag per user (e.g., “isPro”) and expose backend actor methods to read and update this Pro status for the signed-in prototype user profile.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-38",
+      "summary": "Produce a stable Draft Preview build of the current PulseBrief app without attempting any live deployment, keeping the existing UX and generated code unchanged.",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-39",
+      "summary": "Library (logged-out) UX: show an informative empty state instead of only the sign-in form, with copy: Title “Your Library”, text “Save your daily briefs, track portfolio health over time, and build your personal market history.”, primary CTA “Sign in to access Library”, secondary CTA “Upgrade to PulseBrief Pro” (subtle); copy/layout only, no rebuild/new features",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "PulseBrief",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
