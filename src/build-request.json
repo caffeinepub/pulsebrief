@@ -1,110 +1,43 @@
 {
   "kind": "build_request",
-  "title": "Library (logged-out) informative empty state with sign-in + upgrade CTAs",
+  "title": "Mark PulseBrief as Public Preview with footer note",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-44",
-      "text": "Update routing so unauthenticated (logged-out) users can navigate to the Library route \"/library\" without being redirected to the Profile/Sign-in page, and instead see a dedicated informational empty state.",
+      "id": "REQ-50",
+      "text": "Add a Public Preview note to the global footer so it appears across the app (including Landing and authenticated app shell), using exactly this English copy: \"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\" Place the note in the footer without changing the existing compliance disclaimer text: \"Informational only. Not financial advice.\"",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-20"
         ],
         "quotes": [
-          "When a logged-out user clicks Library, show an informative empty state instead of only the sign-in form."
+          "Yes, mark it as Public Preview.\n\nUse this note:\n\"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\"\n\nPlace the note in the footer."
         ]
       },
       "acceptanceCriteria": [
-        "When the prototype session is logged out (no stored email), navigating directly to \"/library\" renders the Library page and does not redirect to \"/profile\".",
-        "The AppShell/header remains visible on \"/library\" (consistent with other in-app routes)."
-      ]
-    },
-    {
-      "id": "REQ-45",
-      "text": "On the Library page (frontend/src/pages/LibraryHistoryPage.tsx), when the user is logged out, render an informative empty state with exactly this English copy and two CTAs: Title: \"Your Library\"; Text: \"Save your daily briefs, track portfolio health over time, and build your personal market history.\"; Primary CTA button label: \"Sign in to access Library\"; Secondary CTA (visually subtle) label: \"Upgrade to PulseBrief Pro\".",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "Title: \"Your Library\"",
-          "Text: \"Save your daily briefs, track portfolio health over time, and build your personal market history.\"",
-          "Primary CTA: \"Sign in to access Library\"",
-          "Secondary CTA (subtle): \"Upgrade to PulseBrief Pro\""
-        ]
-      },
-      "acceptanceCriteria": [
-        "Logged-out view on \"/library\" shows title exactly \"Your Library\".",
-        "Logged-out view on \"/library\" shows description text exactly \"Save your daily briefs, track portfolio health over time, and build your personal market history.\"",
-        "Primary CTA is present with label exactly \"Sign in to access Library\".",
-        "Secondary CTA is present with label exactly \"Upgrade to PulseBrief Pro\" and is visually less prominent than the primary CTA (e.g., outline/ghost style or link-style).",
-        "This change is copy/layout only; no new persistence, no new data models, and no new backend calls are introduced for this state."
-      ]
-    },
-    {
-      "id": "REQ-46",
-      "text": "Wire the logged-out Library empty-state CTAs to existing navigation: clicking \"Sign in to access Library\" must take the user to the existing Profile/Sign-in page (route \"/profile\"). Clicking \"Upgrade to PulseBrief Pro\" must navigate to an existing in-app location that presents the current Pro upgrade experience (use an existing route; do not add a new page).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "Primary CTA: \"Sign in to access Library\"",
-          "Secondary CTA (subtle): \"Upgrade to PulseBrief Pro\"",
-          "No new features."
-        ]
-      },
-      "acceptanceCriteria": [
-        "Clicking the primary CTA navigates to \"/profile\".",
-        "Clicking the secondary CTA navigates to an existing route that already contains the Pro upgrade UI (no new route is created).",
-        "No sign-in modal is forced to open automatically when landing on \"/library\"; sign-in is initiated only via the CTA (or existing global nav behavior)."
-      ]
-    },
-    {
-      "id": "REQ-47",
-      "text": "Preserve the existing Pro-only locked Library empty-state experience for signed-in users who are not Pro (as currently implemented), including the existing exact message text and Upgrade CTA behavior; only change the logged-out state to the new informative empty state.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "No new features.",
-          "UX copy + layout only."
-        ]
-      },
-      "acceptanceCriteria": [
-        "When signed in but not Pro, \"/library\" continues to show the existing Pro-locked empty state content (including the exact text “Your saved briefs and portfolio history will appear here.” and the CTA labeled exactly “Upgrade to PulseBrief Pro”).",
-        "When logged out, \"/library\" shows the new \"Your Library\" informative empty state (not the Pro-locked message)."
+        "The footer renders the note exactly as: \"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\"",
+        "The note is visible in the footer on all routes/pages where the existing footer is shown (e.g., Landing and AppShell pages).",
+        "The existing compliance disclaimer text remains unchanged and continues to read exactly: \"Informational only. Not financial advice.\"",
+        "No other user-facing copy, features, access logic, or page layouts are modified beyond adding this footer note."
       ]
     }
   ],
   "constraints": [
-    "Frontend-only change; do not modify backend/main.mo or add backend methods.",
-    "Do not edit files under frontend/src/components/ui (immutable shadcn components).",
-    "No new routes/pages or new features; only adjust Library UX copy/layout and access behavior for logged-out users."
+    "Frontend-only change (copy/presentation only); no backend changes.",
+    "Do not alter any existing features, gating logic, or routing behavior.",
+    "Do not change the existing compliance disclaimer copy: “Informational only. Not financial advice.”",
+    "Use English for all user-facing text.",
+    "Do not rebuild, redeploy, or create a new draft preview; rely on the existing deployed preview (only update labeling/copy in the specification scope)."
   ],
   "nonGoals": [
-    "Implementing real authentication beyond the existing prototype session flow.",
-    "Implementing actual Pro entitlement logic (isPro) or payment processing.",
-    "Adding Library browsing/demo content for logged-out users.",
-    "Changing the existing non-Pro (signed-in) Library locked-state copy beyond preserving it."
+    "Implementing new Research access logic or changing Research page content.",
+    "Adding payment/checkout or changing Pro entitlement behavior.",
+    "Adding new pages or navigation items.",
+    "Changing header content; the Public Preview labeling request should be satisfied via the footer note only."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

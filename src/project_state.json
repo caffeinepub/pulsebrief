@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 19,
-  "summary": "PulseBrief: a modern dark, premium fintech-style clickable UX prototype for an AI-powered daily market brief + simplified portfolio health guardian (informational only; not financial advice), now including refined copy (“Today’s Market Pulse”), score interpretation labels, improved sign-in CTA microcopy, and a display-only “PulseBrief Pro” soft paywall (no payments) gating personalization/saving/alerts/history behind an “Upgrade to Pro” CTA while keeping demo viewing free.",
+  "projectStateVersion": 23,
+  "summary": "PulseBrief: a modern dark, premium fintech-style clickable UX prototype for an AI-powered daily market brief + simplified portfolio health guardian (informational only; not financial advice), including refined copy (“Today’s Market Pulse”), score interpretation labels, improved sign-in CTA microcopy, and a display-only “PulseBrief Pro” soft paywall (no payments) with consistent “Upgrade to PulseBrief Pro – £19/month” CTAs plus an early-access pricing note (“Early access pricing. Payment coming soon.”). Mark the existing deployed preview as “Public Preview” and add a footer note: “PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.”",
   "architectural_notes": [
     "Prototype only: clickable UX/UI draft for validation, not a production system",
     "Use placeholder AI actions for generating briefs and portfolio analysis (no real data required)",
@@ -372,6 +372,30 @@
         "REQ-47"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-set-pulsebrief-pro-pricing-to-19-month-as-display-only-informational-text-no-payment-or-checkout-flows-and-update-every-upgrade-call-to-action-in-the-ui-to-use-the-exact-label-upgrade-to-pulsebrief-pro-19-month",
+      "title": "Set PulseBrief Pro pricing to £19/month as display-only informational text (no payment or checkout flows), and update every “Upgrade” call-to-action in the UI to use the exact label: “Upgrade to PulseBrief Pro – £19/month”.",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-under-every-pro-upgrade-cta-wherever-it-appears-display-a-small-note-directly-beneath-the-cta-with-the-exact-english-copy-early-access-pricing-payment-coming-soon",
+      "title": "Under every Pro upgrade CTA (wherever it appears), display a small note directly beneath the CTA with the exact English copy: “Early access pricing. Payment coming soon.”",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-public-preview-note-to-the-global-footer-so-it-appears-across-the-app-including-landing-and-authenticated-app-shell-using-exactly-this-english-copy-pulsebrief-is-in-public-preview-some-features-are-limited-pro-19-month-coming-soon-place-the-note-in-the-footer-without-changing-the-existing-compliance-disclaimer-text-informational-only-not-financial-advice",
+      "title": "Add a Public Preview note to the global footer so it appears across the app (including Landing and authenticated app shell), using exactly this English copy: \"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\" Place the note in the footer without changing the existing compliance disclaimer text: \"Informational only. Not financial advice.\"",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -528,6 +552,18 @@
     {
       "id": "AR-39",
       "summary": "Library (logged-out) UX: show an informative empty state instead of only the sign-in form, with copy: Title “Your Library”, text “Save your daily briefs, track portfolio health over time, and build your personal market history.”, primary CTA “Sign in to access Library”, secondary CTA “Upgrade to PulseBrief Pro” (subtle); copy/layout only, no rebuild/new features",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-40",
+      "summary": "Pro CTA pricing copy: update all Pro upgrade CTAs to display exactly “Upgrade to PulseBrief Pro – £19/month” and add the note “Early access pricing. Payment coming soon.”; pricing is informational only (no payment integration)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-41",
+      "summary": "Public Preview labeling: mark product as “Public Preview” and add footer note “PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.” (presentation/copy only; no rebuild/redeploy/code changes)",
       "reqIds": [],
       "status": "pending"
     }

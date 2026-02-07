@@ -1,57 +1,24 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T18:08:45.868Z",
+  "generatedAt": "2026-02-07T18:57:44.732Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
-    "implemented": 4,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
-        "id": "REQ-44",
-        "summary": "Update routing so unauthenticated (logged-out) users can navigate to the Library route \"/library\" without being redirected to the Profile/Sign-in page, and instead see a dedicated informational empty state.",
+        "id": "REQ-50",
+        "summary": "Add a Public Preview note to the global footer so it appears across the app (including Landing and authenticated app shell), using exactly this English copy: \"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\" Place the note in the footer without changing the existing compliance disclaimer text: \"Informational only. Not financial advice.\"",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx"
+          "frontend/src/components/compliance/DisclaimerBar.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-45",
-        "summary": "On the Library page (frontend/src/pages/LibraryHistoryPage.tsx), when the user is logged out, render an informative empty state with exactly this English copy and two CTAs: Title: \"Your Library\"; Text: \"Save your daily briefs, track portfolio health over time, and build your personal market history.\"; Primary CTA button label: \"Sign in to access Library\"; Secondary CTA (visually subtle) label: \"Upgrade to PulseBrief Pro\".",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/LibraryHistoryPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/LibraryHistoryPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-46",
-        "summary": "Wire the logged-out Library empty-state CTAs to existing navigation: clicking \"Sign in to access Library\" must take the user to the existing Profile/Sign-in page (route \"/profile\"). Clicking \"Upgrade to PulseBrief Pro\" must navigate to an existing in-app location that presents the current Pro upgrade experience (use an existing route; do not add a new page).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/LibraryHistoryPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/LibraryHistoryPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-47",
-        "summary": "Preserve the existing Pro-only locked Library empty-state experience for signed-in users who are not Pro (as currently implemented), including the existing exact message text and Upgrade CTA behavior; only change the logged-out state to the new informative empty state.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/LibraryHistoryPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/LibraryHistoryPage.tsx"
+          "frontend/src/components/compliance/DisclaimerBar.tsx"
         ]
       }
     ]
@@ -61,8 +28,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/pages/LibraryHistoryPage.tsx",
+    "frontend/src/components/compliance/DisclaimerBar.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

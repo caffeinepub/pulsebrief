@@ -1,12 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Let logged-out users access the Library route and see an informative empty state with sign-in and upgrade calls to action.
+**Goal:** Mark PulseBrief as being in Public Preview by adding a global footer note across the app.
 
 **Planned changes:**
-- Update routing/guard behavior so unauthenticated users can navigate to `/library` without redirecting to `/profile`, while keeping the AppShell/header visible.
-- In `frontend/src/pages/LibraryHistoryPage.tsx`, add a logged-out empty state with the exact provided title, description, and two CTAs (primary + visually subtle secondary).
-- Wire CTAs to existing navigation: primary goes to `/profile`; secondary goes to an existing in-app route that already shows the Pro upgrade experience (no new page/route).
-- Preserve the current signed-in, non-Pro locked Library empty state (including existing copy and Upgrade CTA behavior); only the logged-out state changes.
+- Add a Public Preview note to the global footer with exactly: "PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon."
+- Keep the existing compliance disclaimer in the footer unchanged: "Informational only. Not financial advice."
 
-**User-visible outcome:** Logged-out users can open `/library` and see an informational Library screen with buttons to sign in or upgrade, while signed-in non-Pro users continue to see the existing Pro-locked Library message.
+**User-visible outcome:** Users see the Public Preview note in the footer on all pages where the footer appears (including the Landing page and authenticated app shell), while the existing compliance disclaimer remains unchanged.

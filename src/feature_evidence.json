@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-routing-so-unauthenticated-logged-out-users-can-navigate-to-the-library-route-library-without-being-redirected-to-the-profile-sign-in-page-and-instead-see-a-dedicated-informational-empty-state",
-      "featureTitle": "Update routing so unauthenticated (logged-out) users can navigate to the Library route \"/library\" without being redirected to the Profile/Sign-in page, and instead see a dedicated informational empty state.",
+      "featureId": "feature-add-a-public-preview-note-to-the-global-footer-so-it-appears-across-the-app-including-landing-and-authenticated-app-shell-using-exactly-this-english-copy-pulsebrief-is-in-public-preview-some-features-are-limited-pro-19-month-coming-soon-place-the-note-in-the-footer-without-changing-the-existing-compliance-disclaimer-text-informational-only-not-financial-advice",
+      "featureTitle": "Add a Public Preview note to the global footer so it appears across the app (including Landing and authenticated app shell), using exactly this English copy: \"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\" Place the note in the footer without changing the existing compliance disclaimer text: \"Informational only. Not financial advice.\"",
       "files": [
-        "frontend/src/App.tsx"
+        "frontend/src/components/compliance/DisclaimerBar.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -15,61 +15,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-44"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-on-the-library-page-frontend-src-pages-libraryhistorypage-tsx-when-the-user-is-logged-out-render-an-informative-empty-state-with-exactly-this-english-copy-and-two-ctas-title-your-library-text-save-your-daily-briefs-track-portfolio-health-over-time-and-build-your-personal-market-history-primary-cta-button-label-sign-in-to-access-library-secondary-cta-visually-subtle-label-upgrade-to-pulsebrief-pro",
-      "featureTitle": "On the Library page (frontend/src/pages/LibraryHistoryPage.tsx), when the user is logged out, render an informative empty state with exactly this English copy and two CTAs: Title: \"Your Library\"; Text: \"Save your daily briefs, track portfolio health over time, and build your personal market history.\"; Primary CTA button label: \"Sign in to access Library\"; Secondary CTA (visually subtle) label: \"Upgrade to PulseBrief Pro\".",
-      "files": [
-        "frontend/src/pages/LibraryHistoryPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-45"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-wire-the-logged-out-library-empty-state-ctas-to-existing-navigation-clicking-sign-in-to-access-library-must-take-the-user-to-the-existing-profile-sign-in-page-route-profile-clicking-upgrade-to-pulsebrief-pro-must-navigate-to-an-existing-in-app-location-that-presents-the-current-pro-upgrade-experience-use-an-existing-route-do-not-add-a-new-page",
-      "featureTitle": "Wire the logged-out Library empty-state CTAs to existing navigation: clicking \"Sign in to access Library\" must take the user to the existing Profile/Sign-in page (route \"/profile\"). Clicking \"Upgrade to PulseBrief Pro\" must navigate to an existing in-app location that presents the current Pro upgrade experience (use an existing route; do not add a new page).",
-      "files": [
-        "frontend/src/pages/LibraryHistoryPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-46"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-preserve-the-existing-pro-only-locked-library-empty-state-experience-for-signed-in-users-who-are-not-pro-as-currently-implemented-including-the-existing-exact-message-text-and-upgrade-cta-behavior-only-change-the-logged-out-state-to-the-new-informative-empty-state",
-      "featureTitle": "Preserve the existing Pro-only locked Library empty-state experience for signed-in users who are not Pro (as currently implemented), including the existing exact message text and Upgrade CTA behavior; only change the logged-out state to the new informative empty state.",
-      "files": [
-        "frontend/src/pages/LibraryHistoryPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-47"
+        "REQ-50"
       ],
       "confidence": "high"
     }

@@ -1,69 +1,22 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Logged-out Library route access + informative empty state with CTAs",
+  "title": "Public Preview footer note across the app",
   "requirements": [
     {
-      "id": "REQ-44",
-      "summary": "Allow logged-out users to access /library without redirect and keep AppShell visible.",
+      "id": "REQ-50",
+      "summary": "Add a Public Preview note to the global footer while preserving the existing compliance disclaimer text unchanged.",
       "acceptanceCriteria": [
-        "When the prototype session is logged out (no stored email), navigating directly to \"/library\" renders the Library page and does not redirect to \"/profile\".",
-        "The AppShell/header remains visible on \"/library\" (consistent with other in-app routes)."
+        "The footer renders the note exactly as: \"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\"",
+        "The note is visible in the footer on all routes/pages where the existing footer is shown (e.g., Landing and AppShell pages).",
+        "The existing compliance disclaimer text remains unchanged and continues to read exactly: \"Informational only. Not financial advice.\"",
+        "No other user-facing copy, features, access logic, or page layouts are modified beyond adding this footer note."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/compliance/DisclaimerBar.tsx",
           "operation": "modify",
-          "description": "Adjust TanStack Router route placement so the /library route is under the public AppShell-wrapped route tree (not behind ProtectedPrototypeGate), ensuring logged-out navigation to /library does not redirect. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-45",
-      "summary": "Add a logged-out informational Library empty state with exact copy and two CTAs.",
-      "acceptanceCriteria": [
-        "Logged-out view on \"/library\" shows title exactly \"Your Library\".",
-        "Logged-out view on \"/library\" shows description text exactly \"Save your daily briefs, track portfolio health over time, and build your personal market history.\"",
-        "Primary CTA is present with label exactly \"Sign in to access Library\".",
-        "Secondary CTA is present with label exactly \"Upgrade to PulseBrief Pro\" and is visually less prominent than the primary CTA (e.g., outline/ghost style or link-style).",
-        "This change is copy/layout only; no new persistence, no new data models, and no new backend calls are introduced for this state."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/LibraryHistoryPage.tsx",
-          "operation": "modify",
-          "description": "Detect logged-out state via the existing prototype session email and render an informational empty state with the exact required title/text and two CTAs. Use shadcn-ui Button variants to make the secondary CTA visually subtle. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-46",
-      "summary": "Wire logged-out Library empty-state CTAs to existing navigation destinations.",
-      "acceptanceCriteria": [
-        "Clicking the primary CTA navigates to \"/profile\".",
-        "Clicking the secondary CTA navigates to an existing route that already contains the Pro upgrade UI (no new route is created).",
-        "No sign-in modal is forced to open automatically when landing on \"/library\"; sign-in is initiated only via the CTA (or existing global nav behavior)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/LibraryHistoryPage.tsx",
-          "operation": "modify",
-          "description": "Use existing router navigation to wire: primary CTA -> /profile. Secondary CTA -> an existing in-app location for the current Pro upgrade experience without adding a new page (e.g., navigate within /library using existing routing features such as search/hash state to show the upgrade prompt area). Ensure landing on /library does not automatically trigger sign-in UI. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-47",
-      "summary": "Keep the signed-in non-Pro locked Library state unchanged; only alter logged-out state.",
-      "acceptanceCriteria": [
-        "When signed in but not Pro, \"/library\" continues to show the existing Pro-locked empty state content (including the exact text “Your saved briefs and portfolio history will appear here.” and the CTA labeled exactly “Upgrade to PulseBrief Pro”).",
-        "When logged out, \"/library\" shows the new \"Your Library\" informative empty state (not the Pro-locked message)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/LibraryHistoryPage.tsx",
-          "operation": "modify",
-          "description": "Refactor conditional rendering to preserve the current signed-in non-Pro locked state UI and copy exactly as-is, while introducing the new logged-out informational empty state. Confirm the existing Upgrade CTA label and locked message remain unchanged for signed-in non-Pro users. Verify the component's usage instructions before implementing."
+          "description": "Insert the Public Preview note text into the existing footer layout so it appears wherever DisclaimerBar is rendered (LandingPage and AppShell). Keep the compliance disclaimer paragraph copy exactly unchanged: \"Informational only. Not financial advice.\" Ensure only copy/presentation is changed (no routing, gating, or layout behavior changes)."
         }
       ]
     }

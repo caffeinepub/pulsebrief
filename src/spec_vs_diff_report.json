@@ -1,40 +1,65 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T18:08:45.863Z",
-  "summary": "Routing was updated to make /library accessible without sign-in and to render a logged-out Library empty state with the requested copy and CTA labels. However, the logged-out “Upgrade to PulseBrief Pro” CTA is wired to navigate back to /library (self) instead of an existing Pro-upgrade location, and the signed-in non‑Pro Upgrade CTA has no visible navigation behavior in the diff, so preserving the prior CTA behavior is not evidenced. Additionally, /brief and /portfolio were also made public, which was not requested.",
-  "missing_requirements": [
+  "generatedAt": "2026-02-07T18:57:44.728Z",
+  "summary": "REQ-50’s Public Preview footer note appears to be implemented in the footer component, and the compliance disclaimer text remains unchanged. However, the diff summary also indicates multiple unrelated frontend changes (not requested) including routing/access changes and various page/content modifications, which violate the “footer note only / no gating or routing changes” constraints.",
+  "missing_requirements": [],
+  "hallucinated_features": [
     {
-      "id": "REQ-46",
-      "requirement": "Wire the logged-out Library empty-state CTAs to existing navigation: “Sign in to access Library” -> /profile; “Upgrade to PulseBrief Pro” -> an existing in-app location with the current Pro upgrade experience (no new route).",
-      "reason": "The primary CTA correctly navigates to /profile, but the secondary CTA navigates to /library (the current page) rather than an existing Pro upgrade experience location.",
+      "description": "Routing/access behavior changed: making /brief, /portfolio, and /library public routes (accessible without sign-in).",
+      "reason": "BuildRequest explicitly forbids altering existing features, gating logic, or routing behavior; requested change is footer-note-only.",
       "evidence": [
-        "frontend/src/pages/LibraryHistoryPage.tsx (logged-out state secondary CTA onClick navigates to '/library')"
+        "frontend-file-summaries.txt (entry for \"frontend/src/App.tsx\")"
       ]
     },
     {
-      "id": "REQ-47",
-      "requirement": "Preserve the existing Pro-only locked Library empty-state experience for signed-in users who are not Pro, including the existing exact message text and the Upgrade CTA behavior.",
-      "reason": "The exact locked-state message text is present, but the Upgrade CTA behavior is not shown/preserved in the diff (button has no onClick/navigation), so preservation of prior behavior is not evidenced.",
+      "description": "Added/modified “demo mode” behavior for unauthenticated users on Today’s Brief and Portfolio pages, including “Sample / Preview” indicators and sign-in prompts for actions.",
+      "reason": "Not requested; BuildRequest is limited to adding a footer note only and explicitly disallows other feature/layout/copy changes beyond that note.",
       "evidence": [
-        "frontend/src/pages/LibraryHistoryPage.tsx (signed-in non-Pro state: <Button size=\"lg\">Upgrade to PulseBrief Pro</Button> has no handler)"
+        "frontend-file-summaries.txt (entries for \"frontend/src/pages/TodaysBriefPage.tsx\" and \"frontend/src/pages/PortfolioPage.tsx\")"
       ]
-    }
-  ],
-  "hallucinated_features": [
+    },
     {
-      "description": "Made /brief and /portfolio routes publicly accessible without sign-in by moving them under a new public AppShell route group.",
-      "reason": "REQ-44 only requests changing access behavior for /library; the diff also changes access for /brief and /portfolio.",
+      "description": "Alerts page content changed to a simplified set of three “guardian-style toggle rules” with descriptions.",
+      "reason": "Not requested; outside the footer note scope.",
       "evidence": [
-        "frontend/src/App.tsx (publicAppRoute includes /brief, /portfolio, /library)"
+        "frontend-file-summaries.txt (entry for \"frontend/src/pages/AlertsRulesPage.tsx\")"
+      ]
+    },
+    {
+      "description": "Library page states/copy and upgrade CTAs implemented/changed, including Pro-locked states and upgrade messaging.",
+      "reason": "Not requested; explicitly out of scope (non-goals include changing Pro entitlement behavior / adding paywall behavior).",
+      "evidence": [
+        "frontend-file-summaries.txt (entry for \"frontend/src/pages/LibraryHistoryPage.tsx\")",
+        "project_state.json (summary mentions “PulseBrief Pro” soft paywall and upgrade CTAs)"
+      ]
+    },
+    {
+      "description": "Profile page/header and sign-in-related UI changes (e.g., “Back to Home” / “Return to PulseBrief” button; header now uses ClickableWordmark).",
+      "reason": "Not requested; outside footer note scope.",
+      "evidence": [
+        "frontend-file-summaries.txt (entry for \"frontend/src/pages/ProfilePage.tsx\")"
+      ]
+    },
+    {
+      "description": "Protected route guard behavior/infrastructure modified (redirect/modal sign-in infrastructure).",
+      "reason": "Not requested; BuildRequest forbids changes to gating logic/access behavior.",
+      "evidence": [
+        "frontend-file-summaries.txt (entry for \"frontend/src/components/layout/ProtectedPrototypeGate.tsx\")"
+      ]
+    },
+    {
+      "description": "Research Mode page content/structure and “save to library” functionality referenced/changed.",
+      "reason": "Not requested; explicitly a non-goal to change Research page content.",
+      "evidence": [
+        "frontend-file-summaries.txt (entry for \"frontend/src/pages/ResearchModePage.tsx\")"
       ]
     }
   ],
-  "confidence": 0.72,
+  "confidence": 0.74,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/App.tsx",
-    "frontend/src/pages/LibraryHistoryPage.tsx",
+    "frontend/src/components/compliance/DisclaimerBar.tsx",
     "project_state.json"
   ]
 }

@@ -11,7 +11,7 @@
   "frontend/src/components/layout/AppNav.tsx": "Top navigation bar with clickable wordmark logo, navigation links to all main pages, user email display, and logout button.",
   "frontend/src/components/layout/ProtectedPrototypeGate.tsx": "Route guard component that redirects to profile page if user email is not set; includes infrastructure for optional modal-based sign-in with dismissal support (currently disabled, redirect mode active).",
   "frontend/src/components/brand/Wordmark.tsx": "Reusable wordmark logo component displaying PulseBrief branding image with configurable size (sm/lg).",
-  "frontend/src/components/compliance/DisclaimerBar.tsx": "Persistent footer displaying required compliance disclaimer \"Informational only. Not financial advice.\" and caffeine.ai attribution with heart icon.",
+  "frontend/src/components/compliance/DisclaimerBar.tsx": "Persistent footer displaying required compliance disclaimer \"Informational only. Not financial advice.\", Public Preview note with pricing information, and caffeine.ai attribution with heart icon.",
   "frontend/src/components/ui/ScorePill.tsx": "Reusable score display component showing numeric scores (0-10 or 0-100) with color-coded styling based on percentage thresholds.",
   "frontend/src/components/states/LoadingState.tsx": "Loading state component with skeleton placeholders for cards and content during data fetching.",
   "frontend/src/components/states/EmptyState.tsx": "Empty state component with icon, title, description, and optional action button for pages with no data.",
