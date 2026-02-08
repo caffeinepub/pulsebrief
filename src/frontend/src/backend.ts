@@ -132,39 +132,78 @@ export interface Asset {
     timeHorizon: string;
     allocation: bigint;
 }
-export interface Profile {
-    email: string;
-    topics: Array<string>;
-    timeZone: string;
-}
 export interface AlertRule {
     id: bigint;
     active: boolean;
     frequency: string;
     condition: string;
 }
+export interface UserProfile {
+    email: string;
+    topics: Array<string>;
+    isPro: boolean;
+    timeZone: string;
+}
+export interface MarketPulseUpdate {
+    id: bigint;
+    updateText: string;
+    timestamp: bigint;
+}
+export enum UserRole {
+    admin = "admin",
+    user = "user",
+    guest = "guest"
+}
 export interface backendInterface {
+    _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     addAsset(name: string, ticker: string, allocation: bigint, timeHorizon: string, averageEntryPrice: bigint | null): Promise<void>;
+    assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createAlertRule(condition: string, frequency: string): Promise<bigint>;
     createDailyBrief(summary: string, riskCatalysts: Array<[bigint, string, string]>, bullishScore: bigint, volatilityScore: bigint, liquidityScore: bigint, signalNoiseScore: bigint, keyDrivers: Array<string>, watchNext: Array<string>): Promise<bigint>;
+    createMarketPulseUpdate(updateText: string, previousUpdateText: string): Promise<bigint>;
     createPortfolioSnapshot(healthScore: bigint, risks: Array<string>, opportunities: Array<string>): Promise<bigint>;
     createResearchItem(topic: string, summary: string, keyPoints: Array<string>, risks: Array<string>, catalysts: Array<string>, score: bigint, justification: string): Promise<bigint>;
     getAlertRule(id: bigint): Promise<AlertRule>;
-    getDailyBrief(id: bigint): Promise<DailyBrief>;
-    getPortfolioSnapshot(id: bigint): Promise<PortfolioSnapshot>;
-    getProfile(email: string): Promise<Profile | null>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserRole(): Promise<UserRole>;
+    getDailyBrief(id: bigint): Promise<DailyBrief | null>;
+    getMarketPulseUpdate(id: bigint): Promise<MarketPulseUpdate | null>;
+    getPortfolioSnapshot(id: bigint): Promise<PortfolioSnapshot | null>;
+    getProfile(email: string): Promise<UserProfile | null>;
     getResearchItem(id: bigint): Promise<ResearchItem>;
+    getTodaysBrief(): Promise<DailyBrief | null>;
+    getTodaysMarketPulseUpdate(): Promise<MarketPulseUpdate | null>;
+    getUserProfile(user: Principal): Promise<UserProfile | null>;
+    isCallerAdmin(): Promise<boolean>;
+    isProUser(): Promise<boolean>;
     listAlertRules(): Promise<Array<[bigint, AlertRule]>>;
     listDailyBriefs(): Promise<Array<[bigint, DailyBrief]>>;
-    listPortfolioSnapshots(): Promise<Array<[bigint, PortfolioSnapshot]>>;
+    listMarketPulseUpdates(): Promise<Array<[bigint, MarketPulseUpdate]>>;
+    listPortfolioSnapshots(): Promise<Array<PortfolioSnapshot>>;
     listResearchItems(): Promise<Array<[bigint, ResearchItem]>>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
     saveResearchItem(id: bigint): Promise<void>;
+    setProStatus(isPro: boolean): Promise<void>;
     toggleAlertRule(id: bigint): Promise<void>;
     updateProfile(email: string, timeZone: string, topics: Array<string>): Promise<void>;
 }
-import type { Asset as _Asset, PortfolioSnapshot as _PortfolioSnapshot, Profile as _Profile } from "./declarations/backend.did.d.ts";
+import type { Asset as _Asset, DailyBrief as _DailyBrief, MarketPulseUpdate as _MarketPulseUpdate, PortfolioSnapshot as _PortfolioSnapshot, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
+    async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor._initializeAccessControlWithSecret(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor._initializeAccessControlWithSecret(arg0);
+            return result;
+        }
+    }
     async addAsset(arg0: string, arg1: string, arg2: bigint, arg3: string, arg4: bigint | null): Promise<void> {
         if (this.processError) {
             try {
@@ -176,6 +215,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.addAsset(arg0, arg1, arg2, arg3, to_candid_opt_n1(this._uploadFile, this._downloadFile, arg4));
+            return result;
+        }
+    }
+    async assignCallerUserRole(arg0: Principal, arg1: UserRole): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n2(this._uploadFile, this._downloadFile, arg1));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n2(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
@@ -204,6 +257,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.createDailyBrief(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+            return result;
+        }
+    }
+    async createMarketPulseUpdate(arg0: string, arg1: string): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.createMarketPulseUpdate(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.createMarketPulseUpdate(arg0, arg1);
             return result;
         }
     }
@@ -249,46 +316,88 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getDailyBrief(arg0: bigint): Promise<DailyBrief> {
+    async getCallerUserProfile(): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserProfile();
+                return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserProfile();
+            return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getCallerUserRole(): Promise<UserRole> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserRole();
+                return from_candid_UserRole_n5(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserRole();
+            return from_candid_UserRole_n5(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getDailyBrief(arg0: bigint): Promise<DailyBrief | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getDailyBrief(arg0);
-                return result;
+                return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getDailyBrief(arg0);
-            return result;
+            return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
         }
     }
-    async getPortfolioSnapshot(arg0: bigint): Promise<PortfolioSnapshot> {
+    async getMarketPulseUpdate(arg0: bigint): Promise<MarketPulseUpdate | null> {
         if (this.processError) {
             try {
-                const result = await this.actor.getPortfolioSnapshot(arg0);
-                return from_candid_PortfolioSnapshot_n2(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getPortfolioSnapshot(arg0);
-            return from_candid_PortfolioSnapshot_n2(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getProfile(arg0: string): Promise<Profile | null> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getProfile(arg0);
+                const result = await this.actor.getMarketPulseUpdate(arg0);
                 return from_candid_opt_n8(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getProfile(arg0);
+            const result = await this.actor.getMarketPulseUpdate(arg0);
             return from_candid_opt_n8(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getPortfolioSnapshot(arg0: bigint): Promise<PortfolioSnapshot | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getPortfolioSnapshot(arg0);
+                return from_candid_opt_n9(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getPortfolioSnapshot(arg0);
+            return from_candid_opt_n9(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getProfile(arg0: string): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getProfile(arg0);
+                return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getProfile(arg0);
+            return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
         }
     }
     async getResearchItem(arg0: bigint): Promise<ResearchItem> {
@@ -302,6 +411,76 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getResearchItem(arg0);
+            return result;
+        }
+    }
+    async getTodaysBrief(): Promise<DailyBrief | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getTodaysBrief();
+                return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getTodaysBrief();
+            return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getTodaysMarketPulseUpdate(): Promise<MarketPulseUpdate | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getTodaysMarketPulseUpdate();
+                return from_candid_opt_n8(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getTodaysMarketPulseUpdate();
+            return from_candid_opt_n8(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getUserProfile(arg0);
+                return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getUserProfile(arg0);
+            return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async isCallerAdmin(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isCallerAdmin();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isCallerAdmin();
+            return result;
+        }
+    }
+    async isProUser(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isProUser();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isProUser();
             return result;
         }
     }
@@ -333,18 +512,32 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async listPortfolioSnapshots(): Promise<Array<[bigint, PortfolioSnapshot]>> {
+    async listMarketPulseUpdates(): Promise<Array<[bigint, MarketPulseUpdate]>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listMarketPulseUpdates();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listMarketPulseUpdates();
+            return result;
+        }
+    }
+    async listPortfolioSnapshots(): Promise<Array<PortfolioSnapshot>> {
         if (this.processError) {
             try {
                 const result = await this.actor.listPortfolioSnapshots();
-                return from_candid_vec_n9(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n16(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.listPortfolioSnapshots();
-            return from_candid_vec_n9(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n16(this._uploadFile, this._downloadFile, result);
         }
     }
     async listResearchItems(): Promise<Array<[bigint, ResearchItem]>> {
@@ -361,6 +554,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.saveCallerUserProfile(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.saveCallerUserProfile(arg0);
+            return result;
+        }
+    }
     async saveResearchItem(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
@@ -372,6 +579,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.saveResearchItem(arg0);
+            return result;
+        }
+    }
+    async setProStatus(arg0: boolean): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.setProStatus(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.setProStatus(arg0);
             return result;
         }
     }
@@ -404,19 +625,31 @@ export class Backend implements backendInterface {
         }
     }
 }
-function from_candid_Asset_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Asset): Asset {
-    return from_candid_record_n6(_uploadFile, _downloadFile, value);
+function from_candid_Asset_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Asset): Asset {
+    return from_candid_record_n14(_uploadFile, _downloadFile, value);
 }
-function from_candid_PortfolioSnapshot_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _PortfolioSnapshot): PortfolioSnapshot {
-    return from_candid_record_n3(_uploadFile, _downloadFile, value);
+function from_candid_PortfolioSnapshot_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _PortfolioSnapshot): PortfolioSnapshot {
+    return from_candid_record_n11(_uploadFile, _downloadFile, value);
 }
-function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
+function from_candid_UserRole_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n6(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Profile]): Profile | null {
+function from_candid_opt_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_DailyBrief]): DailyBrief | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_MarketPulseUpdate]): MarketPulseUpdate | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_PortfolioSnapshot]): PortfolioSnapshot | null {
+    return value.length === 0 ? null : from_candid_PortfolioSnapshot_n10(_uploadFile, _downloadFile, value[0]);
+}
+function from_candid_record_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     date: bigint;
     assets: Array<_Asset>;
     opportunities: Array<string>;
@@ -433,14 +666,14 @@ function from_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint
 } {
     return {
         date: value.date,
-        assets: from_candid_vec_n4(_uploadFile, _downloadFile, value.assets),
+        assets: from_candid_vec_n12(_uploadFile, _downloadFile, value.assets),
         opportunities: value.opportunities,
         allocation: value.allocation,
         healthScore: value.healthScore,
         risks: value.risks
     };
 }
-function from_candid_record_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_record_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: bigint;
     ticker: string;
     averageEntryPrice: [] | [bigint];
@@ -458,26 +691,47 @@ function from_candid_record_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint
     return {
         id: value.id,
         ticker: value.ticker,
-        averageEntryPrice: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.averageEntryPrice)),
+        averageEntryPrice: record_opt_to_undefined(from_candid_opt_n15(_uploadFile, _downloadFile, value.averageEntryPrice)),
         name: value.name,
         timeHorizon: value.timeHorizon,
         allocation: value.allocation
     };
 }
-function from_candid_tuple_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [bigint, _PortfolioSnapshot]): [bigint, PortfolioSnapshot] {
-    return [
-        value[0],
-        from_candid_PortfolioSnapshot_n2(_uploadFile, _downloadFile, value[1])
-    ];
+function from_candid_variant_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    admin: null;
+} | {
+    user: null;
+} | {
+    guest: null;
+}): UserRole {
+    return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
 }
-function from_candid_vec_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Asset>): Array<Asset> {
-    return value.map((x)=>from_candid_Asset_n5(_uploadFile, _downloadFile, x));
+function from_candid_vec_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Asset>): Array<Asset> {
+    return value.map((x)=>from_candid_Asset_n13(_uploadFile, _downloadFile, x));
 }
-function from_candid_vec_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<[bigint, _PortfolioSnapshot]>): Array<[bigint, PortfolioSnapshot]> {
-    return value.map((x)=>from_candid_tuple_n10(_uploadFile, _downloadFile, x));
+function from_candid_vec_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_PortfolioSnapshot>): Array<PortfolioSnapshot> {
+    return value.map((x)=>from_candid_PortfolioSnapshot_n10(_uploadFile, _downloadFile, x));
+}
+function to_candid_UserRole_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
+    return to_candid_variant_n3(_uploadFile, _downloadFile, value);
 }
 function to_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: bigint | null): [] | [bigint] {
     return value === null ? candid_none() : candid_some(value);
+}
+function to_candid_variant_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
+    admin: null;
+} | {
+    user: null;
+} | {
+    guest: null;
+} {
+    return value == UserRole.admin ? {
+        admin: null
+    } : value == UserRole.user ? {
+        user: null
+    } : value == UserRole.guest ? {
+        guest: null
+    } : value;
 }
 export interface CreateActorOptions {
     agent?: Agent;

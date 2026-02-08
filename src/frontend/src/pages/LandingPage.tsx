@@ -4,6 +4,7 @@ import { ArrowRight, TrendingUp, Shield, Zap } from 'lucide-react';
 import ClickableWordmark from '@/components/brand/ClickableWordmark';
 import Wordmark from '@/components/brand/Wordmark';
 import DisclaimerBar from '@/components/compliance/DisclaimerBar';
+import PrototypeNoticeBar from '@/components/common/PrototypeNoticeBar';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ export default function LandingPage() {
           <ClickableWordmark size="sm" />
         </div>
       </header>
+
+      <PrototypeNoticeBar />
 
       <main className="flex-1 flex items-center justify-center px-6 py-16">
         <div className="max-w-4xl mx-auto text-center space-y-12">
@@ -28,23 +31,26 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button
-              size="lg"
-              className="text-lg px-8 py-6 h-auto"
-              onClick={() => navigate({ to: '/brief' })}
-            >
-              View Today's Brief
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="text-lg px-8 py-6 h-auto"
-              onClick={() => navigate({ to: '/portfolio' })}
-            >
-              Add Portfolio
-            </Button>
+          <div className="flex flex-col gap-6 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button
+                size="lg"
+                variant="default"
+                className="text-lg px-8 py-6 h-auto"
+                onClick={() => navigate({ to: '/brief' })}
+              >
+                View LIVE Market Pulse
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 py-6 h-auto"
+                onClick={() => navigate({ to: '/portfolio' })}
+              >
+                Add Portfolio
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12">

@@ -1,65 +1,59 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T18:57:44.728Z",
-  "summary": "REQ-50’s Public Preview footer note appears to be implemented in the footer component, and the compliance disclaimer text remains unchanged. However, the diff summary also indicates multiple unrelated frontend changes (not requested) including routing/access changes and various page/content modifications, which violate the “footer note only / no gating or routing changes” constraints.",
+  "generatedAt": "2026-02-08T17:01:27.548Z",
+  "summary": "REQ-2 and REQ-3 appear implemented in AppNav via opening the Google Form in a new tab and showing the exact thank-you toast. Footer pricing removal (REQ-4) appears addressed in DisclaimerBar. However, the diff summary indicates multiple additional, unrequested functional/UI changes across routing, auth/sign-in prompts, and feature behavior that go beyond the requested CTA/link/copy updates.",
   "missing_requirements": [],
   "hallucinated_features": [
     {
-      "description": "Routing/access behavior changed: making /brief, /portfolio, and /library public routes (accessible without sign-in).",
-      "reason": "BuildRequest explicitly forbids altering existing features, gating logic, or routing behavior; requested change is footer-note-only.",
+      "description": "Changed route access control to make some routes public and others protected (beyond requested CTA/copy/link updates).",
+      "reason": "BuildRequest explicitly says not to rebuild/redesign existing features beyond UI copy/link updates and not to change authentication flows; altering which routes are public/protected is a functional change.",
       "evidence": [
-        "frontend-file-summaries.txt (entry for \"frontend/src/App.tsx\")"
+        "frontend-file-summaries.txt (\"frontend/src/App.tsx\": routes now public/protected changes)"
       ]
     },
     {
-      "description": "Added/modified “demo mode” behavior for unauthenticated users on Today’s Brief and Portfolio pages, including “Sample / Preview” indicators and sign-in prompts for actions.",
-      "reason": "Not requested; BuildRequest is limited to adding a footer note only and explicitly disallows other feature/layout/copy changes beyond that note.",
+      "description": "Removed or altered sign-in / email-related UI across multiple pages (e.g., Profile, Today's Brief) beyond replacing early-access/email-capture CTAs with a single Give Feedback CTA.",
+      "reason": "Non-goals include not adding/changing authentication flows; broad removal of sign-in prompts/UI is a wider auth/UI change than requested.",
       "evidence": [
-        "frontend-file-summaries.txt (entries for \"frontend/src/pages/TodaysBriefPage.tsx\" and \"frontend/src/pages/PortfolioPage.tsx\")"
+        "frontend-file-summaries.txt (\"frontend/src/pages/ProfilePage.tsx\": sign-in UI removed; \"frontend/src/pages/TodaysBriefPage.tsx\": sign-in prompts/CTAs removed)"
       ]
     },
     {
-      "description": "Alerts page content changed to a simplified set of three “guardian-style toggle rules” with descriptions.",
-      "reason": "Not requested; outside the footer note scope.",
+      "description": "Added/changed Portfolio page behavior including logged-out sample preview, free-user local analysis limits, and 'Pro user persistence with backend snapshots'.",
+      "reason": "This is a significant feature/behavior change unrelated to the requested feedback-mode CTA/link/copy changes.",
       "evidence": [
-        "frontend-file-summaries.txt (entry for \"frontend/src/pages/AlertsRulesPage.tsx\")"
+        "frontend-file-summaries.txt (\"frontend/src/pages/PortfolioPage.tsx\": new multi-mode behavior and Pro persistence/back-end snapshots)"
       ]
     },
     {
-      "description": "Library page states/copy and upgrade CTAs implemented/changed, including Pro-locked states and upgrade messaging.",
-      "reason": "Not requested; explicitly out of scope (non-goals include changing Pro entitlement behavior / adding paywall behavior).",
+      "description": "Modified Alerts page to a simplified set of exactly three toggle rules with descriptions.",
+      "reason": "Not requested; constitutes redesign/rebuild of existing feature behavior/UI.",
       "evidence": [
-        "frontend-file-summaries.txt (entry for \"frontend/src/pages/LibraryHistoryPage.tsx\")",
-        "project_state.json (summary mentions “PulseBrief Pro” soft paywall and upgrade CTAs)"
+        "frontend-file-summaries.txt (\"frontend/src/pages/AlertsRulesPage.tsx\": simplified Alerts page with exactly three rules)"
       ]
     },
     {
-      "description": "Profile page/header and sign-in-related UI changes (e.g., “Back to Home” / “Return to PulseBrief” button; header now uses ClickableWordmark).",
-      "reason": "Not requested; outside footer note scope.",
+      "description": "Modified Library page states and Pro entitlement gating logic with upgrade CTA and null-safe handling changes.",
+      "reason": "Not requested; constitutes additional feature logic/UI changes beyond CTA/link/copy updates.",
       "evidence": [
-        "frontend-file-summaries.txt (entry for \"frontend/src/pages/ProfilePage.tsx\")"
+        "frontend-file-summaries.txt (\"frontend/src/pages/LibraryHistoryPage.tsx\": three states using Pro entitlement query and upgrade CTA)"
       ]
     },
     {
-      "description": "Protected route guard behavior/infrastructure modified (redirect/modal sign-in infrastructure).",
-      "reason": "Not requested; BuildRequest forbids changes to gating logic/access behavior.",
+      "description": "Introduced/modified a route guard that redirects to profile if user email is not set and includes modal-based sign-in infrastructure (even if disabled).",
+      "reason": "Touches authentication/identity flow behavior, which is explicitly a non-goal to add/change.",
       "evidence": [
-        "frontend-file-summaries.txt (entry for \"frontend/src/components/layout/ProtectedPrototypeGate.tsx\")"
-      ]
-    },
-    {
-      "description": "Research Mode page content/structure and “save to library” functionality referenced/changed.",
-      "reason": "Not requested; explicitly a non-goal to change Research page content.",
-      "evidence": [
-        "frontend-file-summaries.txt (entry for \"frontend/src/pages/ResearchModePage.tsx\")"
+        "frontend-file-summaries.txt (\"frontend/src/components/layout/ProtectedPrototypeGate.tsx\": redirect based on email presence; optional modal sign-in infrastructure)"
       ]
     }
   ],
-  "confidence": 0.74,
+  "confidence": 0.66,
   "changed_files": [
     "frontend-file-summaries.txt",
     "frontend/src/components/compliance/DisclaimerBar.tsx",
+    "frontend/src/components/feedback/GiveFeedbackDialog.tsx",
+    "frontend/src/components/layout/AppNav.tsx",
     "project_state.json"
   ]
 }

@@ -1,6 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
 import { usePrototypeSession } from '@/state/usePrototypeSession';
-import { toast } from 'sonner';
 
 export function useRequirePrototypeSignIn() {
   const navigate = useNavigate();
@@ -8,8 +7,7 @@ export function useRequirePrototypeSignIn() {
 
   const requireSignIn = (action: string) => {
     if (!email) {
-      toast.info(`Sign in required to ${action}`);
-      navigate({ to: '/profile' });
+      // In feedback mode, no sign-in prompts
       return false;
     }
     return true;

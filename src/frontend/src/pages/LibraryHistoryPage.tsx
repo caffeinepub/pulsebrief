@@ -1,65 +1,136 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Lock, BookMarked } from 'lucide-react';
-import { usePrototypeSession } from '@/state/usePrototypeSession';
+import { Library, Lock } from 'lucide-react';
+import { useLibraryQueries } from '@/queries/libraryQueries';
+import { useProEntitlement } from '@/queries/entitlementQueries';
+import { useRequirePrototypeSignIn } from '@/hooks/useRequirePrototypeSignIn';
+import LoadingState from '@/components/states/LoadingState';
 import { useNavigate } from '@tanstack/react-router';
 
 export default function LibraryHistoryPage() {
-  const { email } = usePrototypeSession();
   const navigate = useNavigate();
-  const isPro = false; // All users are treated as non-Pro in prototype
+  const { isSignedIn } = useRequirePrototypeSignIn();
+  const { isPro, isLoading: proLoading } = useProEntitlement();
+  const { briefs, research, snapshots, isLoading: libraryLoading } = useLibraryQueries();
 
-  // Logged-out state: Show informative empty state
-  if (!email) {
+  const isLoading = isSignedIn && (proLoading || (isPro && libraryLoading));
+
+  if (isLoading) {
+    return <LoadingState />;
+  }
+
+  // Logged-out state: informative empty state
+  if (!isSignedIn) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-            <BookMarked className="h-8 w-8 text-muted-foreground" />
-          </div>
-          <h3 className="text-2xl font-semibold mb-3">Your Library</h3>
-          <p className="text-sm text-muted-foreground mb-8 max-w-md">
-            Save your daily briefs, track portfolio health over time, and build your personal market history.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button 
-              size="lg"
-              onClick={() => navigate({ to: '/profile' })}
-            >
-              Sign in to access Library
-            </Button>
-            <Button 
-              size="lg"
-              variant="outline"
-              onClick={() => navigate({ to: '/library' })}
-            >
-              Upgrade to PulseBrief Pro
-            </Button>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Library & History</h1>
+            <p className="text-muted-foreground">
+              Your saved briefs, research, and portfolio snapshots
+            </p>
           </div>
         </div>
+
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center justify-center text-center space-y-4 py-8">
+              <Library className="h-12 w-12 text-muted-foreground" />
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Library & History</h3>
+                <p className="text-sm text-muted-foreground max-w-md">
+                  Access your saved market briefs, research items, and portfolio snapshots in one place.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  // Signed-in but not Pro: Show Pro-locked state
+  // Signed-in non-Pro state: locked state with upgrade CTA
   if (!isPro) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-            <Lock className="h-8 w-8 text-muted-foreground" />
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Library & History</h1>
+            <p className="text-muted-foreground">
+              Your saved briefs, research, and portfolio snapshots
+            </p>
           </div>
-          <h3 className="text-lg font-semibold mb-2">Library</h3>
-          <p className="text-sm text-muted-foreground mb-6 max-w-md">
-            Your saved briefs and portfolio history will appear here.
-          </p>
-          <Button size="lg">
-            Upgrade to PulseBrief Pro
-          </Button>
         </div>
+
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center justify-center text-center space-y-4 py-8">
+              <Lock className="h-12 w-12 text-primary" />
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Upgrade to Pro</h3>
+                <p className="text-sm text-muted-foreground max-w-md mb-4">
+                  Save and access your market briefs, research, and portfolio history with PulseBrief Pro.
+                </p>
+                <Button size="lg">
+                  Upgrade to Pro
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  // Pro user UI would go here (currently unreachable)
-  return null;
+  // Pro user state: show content (currently unreachable in practice)
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Library & History</h1>
+          <p className="text-muted-foreground">
+            Your saved briefs, research, and portfolio snapshots
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Daily Briefs</CardTitle>
+            <CardDescription>{briefs?.length || 0} saved</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full" onClick={() => navigate({ to: '/brief' })}>
+              View Briefs
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Research Items</CardTitle>
+            <CardDescription>{research?.length || 0} saved</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full" onClick={() => navigate({ to: '/research' })}>
+              View Research
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Portfolio Snapshots</CardTitle>
+            <CardDescription>{snapshots?.length || 0} saved</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full" onClick={() => navigate({ to: '/portfolio' })}>
+              View Snapshots
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
 }

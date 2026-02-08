@@ -10,7 +10,7 @@ export default function DisclaimerBar() {
               Informational only. Not financial advice.
             </p>
             <p className="text-xs md:text-sm text-muted-foreground/80">
-              PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.
+              PulseBrief is in public preview. Some features are limited.
             </p>
           </div>
           <p className="flex items-center gap-1.5">

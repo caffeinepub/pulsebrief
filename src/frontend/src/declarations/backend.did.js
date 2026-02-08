@@ -8,11 +8,22 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const UserRole = IDL.Variant({
+  'admin' : IDL.Null,
+  'user' : IDL.Null,
+  'guest' : IDL.Null,
+});
 export const AlertRule = IDL.Record({
   'id' : IDL.Nat,
   'active' : IDL.Bool,
   'frequency' : IDL.Text,
   'condition' : IDL.Text,
+});
+export const UserProfile = IDL.Record({
+  'email' : IDL.Text,
+  'topics' : IDL.Vec(IDL.Text),
+  'isPro' : IDL.Bool,
+  'timeZone' : IDL.Text,
 });
 export const RiskCatalyst = IDL.Record({
   'id' : IDL.Nat,
@@ -30,6 +41,11 @@ export const DailyBrief = IDL.Record({
   'riskScore' : IDL.Vec(RiskCatalyst),
   'bullishScore' : IDL.Nat,
 });
+export const MarketPulseUpdate = IDL.Record({
+  'id' : IDL.Nat,
+  'updateText' : IDL.Text,
+  'timestamp' : IDL.Int,
+});
 export const Asset = IDL.Record({
   'id' : IDL.Nat,
   'ticker' : IDL.Text,
@@ -46,11 +62,6 @@ export const PortfolioSnapshot = IDL.Record({
   'healthScore' : IDL.Nat,
   'risks' : IDL.Vec(IDL.Text),
 });
-export const Profile = IDL.Record({
-  'email' : IDL.Text,
-  'topics' : IDL.Vec(IDL.Text),
-  'timeZone' : IDL.Text,
-});
 export const ResearchItem = IDL.Record({
   'id' : IDL.Nat,
   'justification' : IDL.Text,
@@ -64,11 +75,13 @@ export const ResearchItem = IDL.Record({
 });
 
 export const idlService = IDL.Service({
+  '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'addAsset' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Nat, IDL.Text, IDL.Opt(IDL.Nat)],
       [],
       [],
     ),
+  'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'createAlertRule' : IDL.Func([IDL.Text, IDL.Text], [IDL.Nat], []),
   'createDailyBrief' : IDL.Func(
       [
@@ -84,6 +97,7 @@ export const idlService = IDL.Service({
       [IDL.Nat],
       [],
     ),
+  'createMarketPulseUpdate' : IDL.Func([IDL.Text, IDL.Text], [IDL.Nat], []),
   'createPortfolioSnapshot' : IDL.Func(
       [IDL.Nat, IDL.Vec(IDL.Text), IDL.Vec(IDL.Text)],
       [IDL.Nat],
@@ -103,10 +117,34 @@ export const idlService = IDL.Service({
       [],
     ),
   'getAlertRule' : IDL.Func([IDL.Nat], [AlertRule], ['query']),
-  'getDailyBrief' : IDL.Func([IDL.Nat], [DailyBrief], ['query']),
-  'getPortfolioSnapshot' : IDL.Func([IDL.Nat], [PortfolioSnapshot], ['query']),
-  'getProfile' : IDL.Func([IDL.Text], [IDL.Opt(Profile)], ['query']),
+  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getDailyBrief' : IDL.Func([IDL.Nat], [IDL.Opt(DailyBrief)], ['query']),
+  'getMarketPulseUpdate' : IDL.Func(
+      [IDL.Nat],
+      [IDL.Opt(MarketPulseUpdate)],
+      ['query'],
+    ),
+  'getPortfolioSnapshot' : IDL.Func(
+      [IDL.Nat],
+      [IDL.Opt(PortfolioSnapshot)],
+      ['query'],
+    ),
+  'getProfile' : IDL.Func([IDL.Text], [IDL.Opt(UserProfile)], ['query']),
   'getResearchItem' : IDL.Func([IDL.Nat], [ResearchItem], ['query']),
+  'getTodaysBrief' : IDL.Func([], [IDL.Opt(DailyBrief)], ['query']),
+  'getTodaysMarketPulseUpdate' : IDL.Func(
+      [],
+      [IDL.Opt(MarketPulseUpdate)],
+      ['query'],
+    ),
+  'getUserProfile' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(UserProfile)],
+      ['query'],
+    ),
+  'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'isProUser' : IDL.Func([], [IDL.Bool], ['query']),
   'listAlertRules' : IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Nat, AlertRule))],
@@ -117,9 +155,14 @@ export const idlService = IDL.Service({
       [IDL.Vec(IDL.Tuple(IDL.Nat, DailyBrief))],
       ['query'],
     ),
+  'listMarketPulseUpdates' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Nat, MarketPulseUpdate))],
+      ['query'],
+    ),
   'listPortfolioSnapshots' : IDL.Func(
       [],
-      [IDL.Vec(IDL.Tuple(IDL.Nat, PortfolioSnapshot))],
+      [IDL.Vec(PortfolioSnapshot)],
       ['query'],
     ),
   'listResearchItems' : IDL.Func(
@@ -127,7 +170,9 @@ export const idlService = IDL.Service({
       [IDL.Vec(IDL.Tuple(IDL.Nat, ResearchItem))],
       ['query'],
     ),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'saveResearchItem' : IDL.Func([IDL.Nat], [], []),
+  'setProStatus' : IDL.Func([IDL.Bool], [], []),
   'toggleAlertRule' : IDL.Func([IDL.Nat], [], []),
   'updateProfile' : IDL.Func([IDL.Text, IDL.Text, IDL.Vec(IDL.Text)], [], []),
 });
@@ -135,11 +180,22 @@ export const idlService = IDL.Service({
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const UserRole = IDL.Variant({
+    'admin' : IDL.Null,
+    'user' : IDL.Null,
+    'guest' : IDL.Null,
+  });
   const AlertRule = IDL.Record({
     'id' : IDL.Nat,
     'active' : IDL.Bool,
     'frequency' : IDL.Text,
     'condition' : IDL.Text,
+  });
+  const UserProfile = IDL.Record({
+    'email' : IDL.Text,
+    'topics' : IDL.Vec(IDL.Text),
+    'isPro' : IDL.Bool,
+    'timeZone' : IDL.Text,
   });
   const RiskCatalyst = IDL.Record({
     'id' : IDL.Nat,
@@ -157,6 +213,11 @@ export const idlFactory = ({ IDL }) => {
     'riskScore' : IDL.Vec(RiskCatalyst),
     'bullishScore' : IDL.Nat,
   });
+  const MarketPulseUpdate = IDL.Record({
+    'id' : IDL.Nat,
+    'updateText' : IDL.Text,
+    'timestamp' : IDL.Int,
+  });
   const Asset = IDL.Record({
     'id' : IDL.Nat,
     'ticker' : IDL.Text,
@@ -173,11 +234,6 @@ export const idlFactory = ({ IDL }) => {
     'healthScore' : IDL.Nat,
     'risks' : IDL.Vec(IDL.Text),
   });
-  const Profile = IDL.Record({
-    'email' : IDL.Text,
-    'topics' : IDL.Vec(IDL.Text),
-    'timeZone' : IDL.Text,
-  });
   const ResearchItem = IDL.Record({
     'id' : IDL.Nat,
     'justification' : IDL.Text,
@@ -191,11 +247,13 @@ export const idlFactory = ({ IDL }) => {
   });
   
   return IDL.Service({
+    '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'addAsset' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Nat, IDL.Text, IDL.Opt(IDL.Nat)],
         [],
         [],
       ),
+    'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'createAlertRule' : IDL.Func([IDL.Text, IDL.Text], [IDL.Nat], []),
     'createDailyBrief' : IDL.Func(
         [
@@ -211,6 +269,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Nat],
         [],
       ),
+    'createMarketPulseUpdate' : IDL.Func([IDL.Text, IDL.Text], [IDL.Nat], []),
     'createPortfolioSnapshot' : IDL.Func(
         [IDL.Nat, IDL.Vec(IDL.Text), IDL.Vec(IDL.Text)],
         [IDL.Nat],
@@ -230,14 +289,34 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'getAlertRule' : IDL.Func([IDL.Nat], [AlertRule], ['query']),
-    'getDailyBrief' : IDL.Func([IDL.Nat], [DailyBrief], ['query']),
-    'getPortfolioSnapshot' : IDL.Func(
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getDailyBrief' : IDL.Func([IDL.Nat], [IDL.Opt(DailyBrief)], ['query']),
+    'getMarketPulseUpdate' : IDL.Func(
         [IDL.Nat],
-        [PortfolioSnapshot],
+        [IDL.Opt(MarketPulseUpdate)],
         ['query'],
       ),
-    'getProfile' : IDL.Func([IDL.Text], [IDL.Opt(Profile)], ['query']),
+    'getPortfolioSnapshot' : IDL.Func(
+        [IDL.Nat],
+        [IDL.Opt(PortfolioSnapshot)],
+        ['query'],
+      ),
+    'getProfile' : IDL.Func([IDL.Text], [IDL.Opt(UserProfile)], ['query']),
     'getResearchItem' : IDL.Func([IDL.Nat], [ResearchItem], ['query']),
+    'getTodaysBrief' : IDL.Func([], [IDL.Opt(DailyBrief)], ['query']),
+    'getTodaysMarketPulseUpdate' : IDL.Func(
+        [],
+        [IDL.Opt(MarketPulseUpdate)],
+        ['query'],
+      ),
+    'getUserProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(UserProfile)],
+        ['query'],
+      ),
+    'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'isProUser' : IDL.Func([], [IDL.Bool], ['query']),
     'listAlertRules' : IDL.Func(
         [],
         [IDL.Vec(IDL.Tuple(IDL.Nat, AlertRule))],
@@ -248,9 +327,14 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(IDL.Nat, DailyBrief))],
         ['query'],
       ),
+    'listMarketPulseUpdates' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Nat, MarketPulseUpdate))],
+        ['query'],
+      ),
     'listPortfolioSnapshots' : IDL.Func(
         [],
-        [IDL.Vec(IDL.Tuple(IDL.Nat, PortfolioSnapshot))],
+        [IDL.Vec(PortfolioSnapshot)],
         ['query'],
       ),
     'listResearchItems' : IDL.Func(
@@ -258,7 +342,9 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(IDL.Nat, ResearchItem))],
         ['query'],
       ),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'saveResearchItem' : IDL.Func([IDL.Nat], [], []),
+    'setProStatus' : IDL.Func([IDL.Bool], [], []),
     'toggleAlertRule' : IDL.Func([IDL.Nat], [], []),
     'updateProfile' : IDL.Func([IDL.Text, IDL.Text, IDL.Vec(IDL.Text)], [], []),
   });

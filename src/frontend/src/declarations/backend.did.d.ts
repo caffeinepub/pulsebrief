@@ -35,6 +35,11 @@ export interface DailyBrief {
   'riskScore' : Array<RiskCatalyst>,
   'bullishScore' : bigint,
 }
+export interface MarketPulseUpdate {
+  'id' : bigint,
+  'updateText' : string,
+  'timestamp' : bigint,
+}
 export interface PortfolioSnapshot {
   'date' : bigint,
   'assets' : Array<Asset>,
@@ -42,11 +47,6 @@ export interface PortfolioSnapshot {
   'allocation' : bigint,
   'healthScore' : bigint,
   'risks' : Array<string>,
-}
-export interface Profile {
-  'email' : string,
-  'topics' : Array<string>,
-  'timeZone' : string,
 }
 export interface ResearchItem {
   'id' : bigint,
@@ -64,11 +64,22 @@ export interface RiskCatalyst {
   'impact' : string,
   'description' : string,
 }
+export interface UserProfile {
+  'email' : string,
+  'topics' : Array<string>,
+  'isPro' : boolean,
+  'timeZone' : string,
+}
+export type UserRole = { 'admin' : null } |
+  { 'user' : null } |
+  { 'guest' : null };
 export interface _SERVICE {
+  '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'addAsset' : ActorMethod<
     [string, string, bigint, string, [] | [bigint]],
     undefined
   >,
+  'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createAlertRule' : ActorMethod<[string, string], bigint>,
   'createDailyBrief' : ActorMethod<
     [
@@ -83,6 +94,7 @@ export interface _SERVICE {
     ],
     bigint
   >,
+  'createMarketPulseUpdate' : ActorMethod<[string, string], bigint>,
   'createPortfolioSnapshot' : ActorMethod<
     [bigint, Array<string>, Array<string>],
     bigint
@@ -100,18 +112,29 @@ export interface _SERVICE {
     bigint
   >,
   'getAlertRule' : ActorMethod<[bigint], AlertRule>,
-  'getDailyBrief' : ActorMethod<[bigint], DailyBrief>,
-  'getPortfolioSnapshot' : ActorMethod<[bigint], PortfolioSnapshot>,
-  'getProfile' : ActorMethod<[string], [] | [Profile]>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getDailyBrief' : ActorMethod<[bigint], [] | [DailyBrief]>,
+  'getMarketPulseUpdate' : ActorMethod<[bigint], [] | [MarketPulseUpdate]>,
+  'getPortfolioSnapshot' : ActorMethod<[bigint], [] | [PortfolioSnapshot]>,
+  'getProfile' : ActorMethod<[string], [] | [UserProfile]>,
   'getResearchItem' : ActorMethod<[bigint], ResearchItem>,
+  'getTodaysBrief' : ActorMethod<[], [] | [DailyBrief]>,
+  'getTodaysMarketPulseUpdate' : ActorMethod<[], [] | [MarketPulseUpdate]>,
+  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'isCallerAdmin' : ActorMethod<[], boolean>,
+  'isProUser' : ActorMethod<[], boolean>,
   'listAlertRules' : ActorMethod<[], Array<[bigint, AlertRule]>>,
   'listDailyBriefs' : ActorMethod<[], Array<[bigint, DailyBrief]>>,
-  'listPortfolioSnapshots' : ActorMethod<
+  'listMarketPulseUpdates' : ActorMethod<
     [],
-    Array<[bigint, PortfolioSnapshot]>
+    Array<[bigint, MarketPulseUpdate]>
   >,
+  'listPortfolioSnapshots' : ActorMethod<[], Array<PortfolioSnapshot>>,
   'listResearchItems' : ActorMethod<[], Array<[bigint, ResearchItem]>>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'saveResearchItem' : ActorMethod<[bigint], undefined>,
+  'setProStatus' : ActorMethod<[boolean], undefined>,
   'toggleAlertRule' : ActorMethod<[bigint], undefined>,
   'updateProfile' : ActorMethod<[string, string, Array<string>], undefined>,
 }

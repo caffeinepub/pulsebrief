@@ -48,6 +48,19 @@ export default {
                 card: {
                     DEFAULT: 'oklch(var(--card))',
                     foreground: 'oklch(var(--card-foreground))'
+                },
+                // Market Pulse theme tokens
+                pulse: {
+                    card: 'oklch(var(--pulse-card))',
+                    border: 'oklch(var(--pulse-border))',
+                    text: 'oklch(var(--pulse-text))',
+                    timestamp: 'oklch(var(--pulse-timestamp))',
+                    urgent: 'oklch(var(--pulse-urgent))',
+                    developing: 'oklch(var(--pulse-developing))',
+                    context: 'oklch(var(--pulse-context))',
+                    impact: 'oklch(var(--pulse-impact))',
+                    live: 'oklch(var(--pulse-live))',
+                    'live-text': 'oklch(var(--pulse-live-text))'
                 }
             },
             borderRadius: {

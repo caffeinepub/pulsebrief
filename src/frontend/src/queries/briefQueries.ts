@@ -15,6 +15,15 @@ export function useBriefQueries(enabled: boolean = true) {
     enabled: enabled && !!actor && !isFetching,
   });
 
+  const todaysBrief = useQuery({
+    queryKey: ['todaysBrief'],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getTodaysBrief();
+    },
+    enabled: enabled && !!actor && !isFetching,
+  });
+
   const createBriefMutation = useMutation({
     mutationFn: async (data: {
       summary: string;
@@ -40,11 +49,13 @@ export function useBriefQueries(enabled: boolean = true) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['briefs'] });
+      queryClient.invalidateQueries({ queryKey: ['todaysBrief'] });
     },
   });
 
   return {
     briefs: briefs.data,
+    todaysBrief: todaysBrief.data,
     isLoading: briefs.isLoading,
     createBriefMutation,
   };

@@ -1,22 +1,92 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Public Preview footer note across the app",
+  "title": "Switch UI to Feedback Mode CTA, external Google Form, and remove pricing copy",
   "requirements": [
     {
-      "id": "REQ-50",
-      "summary": "Add a Public Preview note to the global footer while preserving the existing compliance disclaimer text unchanged.",
+      "id": "REQ-1",
+      "summary": "Remove any early-access/email-capture UI and replace with a single “Give Feedback” CTA wherever applicable, without changing other features.",
       "acceptanceCriteria": [
-        "The footer renders the note exactly as: \"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\"",
-        "The note is visible in the footer on all routes/pages where the existing footer is shown (e.g., Landing and AppShell pages).",
-        "The existing compliance disclaimer text remains unchanged and continues to read exactly: \"Informational only. Not financial advice.\"",
-        "No other user-facing copy, features, access logic, or page layouts are modified beyond adding this footer note."
+        "No UI in the app asks users to join early access or capture an email address.",
+        "Any prior early-access CTA copy is replaced with a single CTA labeled exactly “Give Feedback”.",
+        "No functional changes are introduced beyond UI copy/link adjustments."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/layout/AppNav.tsx",
+          "operation": "modify",
+          "description": "Ensure the navigation uses a single CTA labeled exactly “Give Feedback” (no alternate early-access/email-capture copy) and remove any early-access style actions from the nav area. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/LandingPage.tsx",
+          "operation": "modify",
+          "description": "Audit landing-page hero/CTA copy and actions to confirm there is no “Join Early Access” or email capture; if any such CTA exists, replace it with a single CTA labeled exactly “Give Feedback” that points to the same external feedback flow used elsewhere. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/config/waitlist.ts",
+          "operation": "modify",
+          "description": "Remove or repurpose early-access/waitlist configuration usage so the app no longer exposes “early access”/waitlist semantics in UI wiring; ensure any remaining reference is aligned to the single “Give Feedback” CTA flow. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Change the primary “Give Feedback” navigation CTA to open the provided Google Form in a new tab and stop invoking the in-app feedback dialog.",
+      "acceptanceCriteria": [
+        "Clicking “Give Feedback” opens https://forms.gle/gQA8LJEqMBNJsooL6 in a new tab (uses target=\"_blank\" with rel=\"noopener noreferrer\" or equivalent).",
+        "The in-app modal dialog currently used for feedback collection is no longer shown from the navigation CTA."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/layout/AppNav.tsx",
+          "operation": "modify",
+          "description": "Replace the current modal-trigger behavior with a link/open action that opens https://forms.gle/gQA8LJEqMBNJsooL6 in a new browser tab using safe new-tab attributes (e.g., rel=\"noopener noreferrer\"). Remove the GiveFeedbackDialog trigger/wiring from the navigation CTA. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/feedback/GiveFeedbackDialog.tsx",
+          "operation": "delete",
+          "description": "Remove the in-app feedback dialog component since navigation no longer uses an in-app feedback dialog and feedback collection is handled by the external Google Form."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Show an in-app thank-you message with the exact required text after the user initiates the feedback submission flow.",
+      "acceptanceCriteria": [
+        "A thank-you message is displayed to the user with the exact text: “Thanks — your feedback helps shape what we build next.”",
+        "The message is shown in-app (e.g., toast/banner/inline message) without requiring backend changes."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/layout/AppNav.tsx",
+          "operation": "modify",
+          "description": "When the user clicks the “Give Feedback” CTA (initiating the external form flow), display an in-app toast/banner message with the exact text: “Thanks — your feedback helps shape what we build next.” Ensure this occurs without backend changes. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Remove the “Pro (£19/month) coming soon” footer line and eliminate any pricing mentions from the header/footer while keeping other content intact.",
+      "acceptanceCriteria": [
+        "The footer no longer displays the text “Pro (£19/month) coming soon.”",
+        "No pricing text (currency symbols, amounts, or price-related copy) appears in the app header or footer.",
+        "All other footer/header content remains intact aside from the removed pricing mentions."
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/compliance/DisclaimerBar.tsx",
           "operation": "modify",
-          "description": "Insert the Public Preview note text into the existing footer layout so it appears wherever DisclaimerBar is rendered (LandingPage and AppShell). Keep the compliance disclaimer paragraph copy exactly unchanged: \"Informational only. Not financial advice.\" Ensure only copy/presentation is changed (no routing, gating, or layout behavior changes)."
+          "description": "Remove the footer sentence fragment containing “Pro (£19/month) coming soon” and adjust the remaining disclaimer copy so no pricing-related text remains, keeping all other footer elements and layout unchanged. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/layout/AppNav.tsx",
+          "operation": "modify",
+          "description": "Audit header/navigation-rendered text to ensure there are no pricing mentions in the header area (and remove any if present) while preserving all non-pricing header content. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/LandingPage.tsx",
+          "operation": "modify",
+          "description": "Audit the landing-page header and footer usage to ensure no pricing mentions appear in those regions; keep all other content intact aside from removing any pricing text if found. Verify the component's usage instructions before implementing."
         }
       ]
     }

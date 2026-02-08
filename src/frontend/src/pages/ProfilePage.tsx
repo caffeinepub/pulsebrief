@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -25,10 +24,9 @@ const TIMEZONES = [
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const { email, setEmail } = usePrototypeSession();
+  const { email } = usePrototypeSession();
   const { profile, updateProfileMutation } = useProfileQueries(email || '');
 
-  const [localEmail, setLocalEmail] = useState(email || '');
   const [timezone, setTimezone] = useState('UTC');
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
@@ -39,18 +37,9 @@ export default function ProfilePage() {
     }
   }, [profile]);
 
-  const handleSignIn = () => {
-    if (!localEmail || !localEmail.includes('@')) {
-      toast.error('Please enter a valid email address');
-      return;
-    }
-    setEmail(localEmail);
-    toast.success('Signed in successfully');
-  };
-
   const handleSaveProfile = () => {
     if (!email) {
-      toast.error('Please sign in first');
+      toast.error('Profile settings unavailable');
       return;
     }
 
@@ -91,75 +80,53 @@ export default function ProfilePage() {
           <CardHeader>
             <CardTitle>Profile Settings</CardTitle>
             <CardDescription>
-              {email ? 'Update your preferences' : 'Sign in to get started'}
+              Update your preferences
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {!email ? (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={localEmail}
-                    onChange={(e) => setLocalEmail(e.target.value)}
-                  />
-                </div>
-                <Button onClick={handleSignIn} className="w-full">
-                  Sign In
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate({ to: '/' })}
-                  className="w-full"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Home
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-6">
+            <div className="space-y-6">
+              {email && (
                 <div className="space-y-2">
                   <Label>Email</Label>
                   <div className="text-sm text-muted-foreground">{email}</div>
                 </div>
+              )}
 
-                <div className="space-y-2">
-                  <Label htmlFor="timezone">Timezone</Label>
-                  <Select value={timezone} onValueChange={setTimezone}>
-                    <SelectTrigger id="timezone">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TIMEZONES.map((tz) => (
-                        <SelectItem key={tz} value={tz}>
-                          {tz}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-3">
-                  <Label>Preferred Topics</Label>
-                  <div className="space-y-2">
-                    {TOPICS.map((topic) => (
-                      <div key={topic} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={topic}
-                          checked={selectedTopics.includes(topic)}
-                          onCheckedChange={() => toggleTopic(topic)}
-                        />
-                        <Label htmlFor={topic} className="font-normal cursor-pointer">
-                          {topic}
-                        </Label>
-                      </div>
+              <div className="space-y-2">
+                <Label htmlFor="timezone">Timezone</Label>
+                <Select value={timezone} onValueChange={setTimezone}>
+                  <SelectTrigger id="timezone">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TIMEZONES.map((tz) => (
+                      <SelectItem key={tz} value={tz}>
+                        {tz}
+                      </SelectItem>
                     ))}
-                  </div>
-                </div>
+                  </SelectContent>
+                </Select>
+              </div>
 
+              <div className="space-y-3">
+                <Label>Preferred Topics</Label>
+                <div className="space-y-2">
+                  {TOPICS.map((topic) => (
+                    <div key={topic} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={topic}
+                        checked={selectedTopics.includes(topic)}
+                        onCheckedChange={() => toggleTopic(topic)}
+                      />
+                      <Label htmlFor={topic} className="font-normal cursor-pointer">
+                        {topic}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {email && (
                 <Button
                   onClick={handleSaveProfile}
                   className="w-full"
@@ -167,16 +134,16 @@ export default function ProfilePage() {
                 >
                   {updateProfileMutation.isPending ? 'Saving...' : 'Save & Continue'}
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate({ to: '/' })}
-                  className="w-full"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Return to PulseBrief
-                </Button>
-              </div>
-            )}
+              )}
+              <Button
+                variant="outline"
+                onClick={() => navigate({ to: '/' })}
+                className="w-full"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Return to PulseBrief
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </main>

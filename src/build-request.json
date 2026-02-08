@@ -1,40 +1,90 @@
 {
   "kind": "build_request",
-  "title": "Mark PulseBrief as Public Preview with footer note",
+  "title": "Switch UI to Feedback Mode: single Give Feedback CTA, external Google Form, and remove pricing copy",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-50",
-      "text": "Add a Public Preview note to the global footer so it appears across the app (including Landing and authenticated app shell), using exactly this English copy: \"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\" Place the note in the footer without changing the existing compliance disclaimer text: \"Informational only. Not financial advice.\"",
+      "id": "REQ-1",
+      "text": "Replace any “Join Early Access” and/or email-capture UI elements with a single “Give Feedback” call-to-action (CTA) throughout the app, keeping all other UI and features unchanged.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-20"
+          "msg-4"
         ],
         "quotes": [
-          "Yes, mark it as Public Preview.\n\nUse this note:\n\"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\"\n\nPlace the note in the footer."
+          "Replace any “Join Early Access” / email capture with a single “Give Feedback” CTA.",
+          "Keep everything else the same. No rebuild of features, just UI copy + links."
         ]
       },
       "acceptanceCriteria": [
-        "The footer renders the note exactly as: \"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\"",
-        "The note is visible in the footer on all routes/pages where the existing footer is shown (e.g., Landing and AppShell pages).",
-        "The existing compliance disclaimer text remains unchanged and continues to read exactly: \"Informational only. Not financial advice.\"",
-        "No other user-facing copy, features, access logic, or page layouts are modified beyond adding this footer note."
+        "No UI in the app asks users to join early access or capture an email address.",
+        "Any prior early-access CTA copy is replaced with a single CTA labeled exactly “Give Feedback”.",
+        "No functional changes are introduced beyond UI copy/link adjustments."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Update the primary “Give Feedback” CTA (currently in the main navigation) so that clicking it opens the Google Form https://forms.gle/gQA8LJEqMBNJsooL6 in a new browser tab, instead of opening an in-app feedback dialog.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "The “Give Feedback” button should open this Google Form (new tab): https://forms.gle/gQA8LJEqMBNJsooL6"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking “Give Feedback” opens https://forms.gle/gQA8LJEqMBNJsooL6 in a new tab (uses target=\"_blank\" with rel=\"noopener noreferrer\" or equivalent).",
+        "The in-app modal dialog currently used for feedback collection is no longer shown from the navigation CTA."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "After the user initiates feedback submission flow, display the thank-you message exactly: “Thanks — your feedback helps shape what we build next.”",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "After submit, show a simple thank-you message:\n“Thanks — your feedback helps shape what we build next.”"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A thank-you message is displayed to the user with the exact text: “Thanks — your feedback helps shape what we build next.”",
+        "The message is shown in-app (e.g., toast/banner/inline message) without requiring backend changes."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Remove the footer line that includes “Pro (£19/month) coming soon” and remove any other pricing mentions from the footer and header so no pricing appears there.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Remove the “Pro (£19/month) coming soon” line from the footer (hide pricing).",
+          "Also remove any other pricing mentions from the footer and header (no price anywhere)."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The footer no longer displays the text “Pro (£19/month) coming soon.”",
+        "No pricing text (currency symbols, amounts, or price-related copy) appears in the app header or footer.",
+        "All other footer/header content remains intact aside from the removed pricing mentions."
       ]
     }
   ],
   "constraints": [
-    "Frontend-only change (copy/presentation only); no backend changes.",
-    "Do not alter any existing features, gating logic, or routing behavior.",
-    "Do not change the existing compliance disclaimer copy: “Informational only. Not financial advice.”",
-    "Use English for all user-facing text.",
-    "Do not rebuild, redeploy, or create a new draft preview; rely on the existing deployed preview (only update labeling/copy in the specification scope)."
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "Backend must remain single-actor (backend/main.mo); do not introduce additional backend services.",
+    "Use English for any user-facing text."
   ],
   "nonGoals": [
-    "Implementing new Research access logic or changing Research page content.",
-    "Adding payment/checkout or changing Pro entitlement behavior.",
-    "Adding new pages or navigation items.",
-    "Changing header content; the Public Preview labeling request should be satisfied via the footer note only."
+    "Do not rebuild or redesign existing features beyond the requested UI copy/link updates.",
+    "Do not add or change authentication flows (no new signup/login mechanisms).",
+    "Do not add backend persistence for feedback submissions (Google Form only)."
   ],
   "imageRequirements": {
     "required": [],

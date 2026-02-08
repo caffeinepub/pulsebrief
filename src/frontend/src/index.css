@@ -24,6 +24,18 @@
         --border: 0.88 0 0;
         --input: 0.88 0 0;
         --ring: 0.65 0.15 250;
+        
+        /* Market Pulse theme - newsroom/terminal aesthetic */
+        --pulse-card: 0.96 0 0;
+        --pulse-border: 0.82 0 0;
+        --pulse-text: 0.25 0 0;
+        --pulse-timestamp: 0.55 0 0;
+        --pulse-urgent: 0.55 0.24 25;
+        --pulse-developing: 0.65 0.18 55;
+        --pulse-context: 0.60 0.12 220;
+        --pulse-impact: 0.55 0.16 160;
+        --pulse-live: 0.55 0.24 25;
+        --pulse-live-text: 0.98 0 0;
     }
 
     .dark {
@@ -46,6 +58,18 @@
         --border: 0.24 0 0;
         --input: 0.24 0 0;
         --ring: 0.70 0.18 250;
+        
+        /* Market Pulse theme - dark terminal aesthetic */
+        --pulse-card: 0.14 0 0;
+        --pulse-border: 0.28 0 0;
+        --pulse-text: 0.88 0 0;
+        --pulse-timestamp: 0.62 0 0;
+        --pulse-urgent: 0.65 0.26 25;
+        --pulse-developing: 0.72 0.20 55;
+        --pulse-context: 0.68 0.14 220;
+        --pulse-impact: 0.65 0.18 160;
+        --pulse-live: 0.65 0.26 25;
+        --pulse-live-text: 0.12 0 0;
     }
 
     * {

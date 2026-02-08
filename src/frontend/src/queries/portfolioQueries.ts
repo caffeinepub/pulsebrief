@@ -10,7 +10,7 @@ export function usePortfolioQueries(enabled: boolean = true) {
     queryFn: async () => {
       if (!actor) return [];
       const result = await actor.listPortfolioSnapshots();
-      return result.sort((a, b) => Number(b[1].date - a[1].date));
+      return result.sort((a, b) => Number(b.date - a.date));
     },
     enabled: enabled && !!actor && !isFetching,
   });

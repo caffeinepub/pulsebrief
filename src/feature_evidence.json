@@ -2,20 +2,80 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-public-preview-note-to-the-global-footer-so-it-appears-across-the-app-including-landing-and-authenticated-app-shell-using-exactly-this-english-copy-pulsebrief-is-in-public-preview-some-features-are-limited-pro-19-month-coming-soon-place-the-note-in-the-footer-without-changing-the-existing-compliance-disclaimer-text-informational-only-not-financial-advice",
-      "featureTitle": "Add a Public Preview note to the global footer so it appears across the app (including Landing and authenticated app shell), using exactly this English copy: \"PulseBrief is in public preview. Some features are limited. Pro (£19/month) coming soon.\" Place the note in the footer without changing the existing compliance disclaimer text: \"Informational only. Not financial advice.\"",
+      "featureId": "feature-replace-any-join-early-access-and-or-email-capture-ui-elements-with-a-single-give-feedback-call-to-action-cta-throughout-the-app-keeping-all-other-ui-and-features-unchanged",
+      "featureTitle": "Replace any “Join Early Access” and/or email-capture UI elements with a single “Give Feedback” call-to-action (CTA) throughout the app, keeping all other UI and features unchanged.",
       "files": [
-        "frontend/src/components/compliance/DisclaimerBar.tsx"
+        "frontend/src/components/layout/AppNav.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
         "shadcn-ui@1.0.0",
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-50"
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-primary-give-feedback-cta-currently-in-the-main-navigation-so-that-clicking-it-opens-the-google-form-https-forms-gle-gqa8ljeqmbnjsool6-in-a-new-browser-tab-instead-of-opening-an-in-app-feedback-dialog",
+      "featureTitle": "Update the primary “Give Feedback” CTA (currently in the main navigation) so that clicking it opens the Google Form https://forms.gle/gQA8LJEqMBNJsooL6 in a new browser tab, instead of opening an in-app feedback dialog.",
+      "files": [
+        "frontend/src/components/feedback/GiveFeedbackDialog.tsx",
+        "frontend/src/components/layout/AppNav.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-after-the-user-initiates-feedback-submission-flow-display-the-thank-you-message-exactly-thanks-your-feedback-helps-shape-what-we-build-next",
+      "featureTitle": "After the user initiates feedback submission flow, display the thank-you message exactly: “Thanks — your feedback helps shape what we build next.”",
+      "files": [
+        "frontend/src/components/layout/AppNav.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-remove-the-footer-line-that-includes-pro-19-month-coming-soon-and-remove-any-other-pricing-mentions-from-the-footer-and-header-so-no-pricing-appears-there",
+      "featureTitle": "Remove the footer line that includes “Pro (£19/month) coming soon” and remove any other pricing mentions from the footer and header so no pricing appears there.",
+      "files": [
+        "frontend/src/components/compliance/DisclaimerBar.tsx",
+        "frontend/src/components/layout/AppNav.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
       ],
       "confidence": "high"
     }

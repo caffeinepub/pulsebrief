@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -7,10 +6,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { usePrototypeSession } from '@/state/usePrototypeSession';
-import { toast } from 'sonner';
 
 interface PrototypeSignInDialogProps {
   open: boolean;
@@ -23,19 +18,6 @@ export default function PrototypeSignInDialog({
   onOpenChange,
   onDismiss,
 }: PrototypeSignInDialogProps) {
-  const { setEmail } = usePrototypeSession();
-  const [localEmail, setLocalEmail] = useState('');
-
-  const handleSignIn = () => {
-    if (!localEmail || !localEmail.includes('@')) {
-      toast.error('Please enter a valid email address');
-      return;
-    }
-    setEmail(localEmail);
-    toast.success('Signed in successfully');
-    onOpenChange(false);
-  };
-
   const handleDismiss = () => {
     onOpenChange(false);
     onDismiss();
@@ -45,29 +27,16 @@ export default function PrototypeSignInDialog({
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleDismiss()}>
       <DialogContent onEscapeKeyDown={handleDismiss} onPointerDownOutside={handleDismiss}>
         <DialogHeader>
-          <DialogTitle>Sign In</DialogTitle>
-          <DialogDescription>Enter your email to get started with PulseBrief</DialogDescription>
+          <DialogTitle>Feedback Mode</DialogTitle>
+          <DialogDescription>This prototype is in feedback collection mode.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="dialog-email">Email</Label>
-            <Input
-              id="dialog-email"
-              type="email"
-              placeholder="you@example.com"
-              value={localEmail}
-              onChange={(e) => setLocalEmail(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
-            />
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={handleSignIn} className="flex-1">
-              Sign In
-            </Button>
-            <Button variant="outline" onClick={handleDismiss} className="flex-1">
-              Cancel
-            </Button>
-          </div>
+          <p className="text-sm text-muted-foreground">
+            We're collecting feedback to decide what to build next. Use the "Give Feedback" button in the navigation to share your thoughts.
+          </p>
+          <Button variant="outline" onClick={handleDismiss} className="w-full">
+            Close
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

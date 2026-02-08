@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, TrendingUp, AlertTriangle, CheckCircle2, Eye } from 'lucide-react';
+import { Plus, TrendingUp, AlertTriangle, CheckCircle2, Eye, Lock } from 'lucide-react';
 import { usePortfolioQueries } from '@/queries/portfolioQueries';
 import { toast } from 'sonner';
 import AssetEditor from '@/components/portfolio/AssetEditor';
+import FreeAssetEditor from '@/components/portfolio/FreeAssetEditor';
 import LoadingState from '@/components/states/LoadingState';
 import StandardScore from '@/components/common/StandardScore';
 import DemoStateIndicator from '@/components/common/DemoStateIndicator';
 import { useRequirePrototypeSignIn } from '@/hooks/useRequirePrototypeSignIn';
+import { useProEntitlement } from '@/queries/entitlementQueries';
+import { useNavigate } from '@tanstack/react-router';
+import { analyzeFreePortfolio, type FreeAsset } from '@/lib/freePortfolioAnalysis';
 
 // Sample demo data
 const DEMO_SNAPSHOT = {
@@ -54,19 +58,38 @@ const DEMO_SNAPSHOT = {
 };
 
 export default function PortfolioPage() {
-  const { isSignedIn, requireSignIn } = useRequirePrototypeSignIn();
-  const { snapshots, isLoading, createSnapshotMutation } = usePortfolioQueries(isSignedIn);
+  const navigate = useNavigate();
+  const { isSignedIn } = useRequirePrototypeSignIn();
+  const { isPro, isLoading: proLoading } = useProEntitlement();
+  const { snapshots, isLoading: snapshotsLoading, createSnapshotMutation } = usePortfolioQueries(isSignedIn && isPro);
+  
   const [showEditor, setShowEditor] = useState(false);
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [freeAssets, setFreeAssets] = useState<FreeAsset[]>([]);
+  const [freeAnalysis, setFreeAnalysis] = useState<ReturnType<typeof analyzeFreePortfolio> | null>(null);
 
-  const latestSnapshot = snapshots?.[0]?.[1];
+  const latestSnapshot = snapshots?.[0];
+  const isLoading = isSignedIn && (proLoading || (isPro && snapshotsLoading));
 
   const handleRunAnalysis = () => {
-    // In demo mode, prompt sign-in
-    if (!requireSignIn('save a portfolio')) {
+    // Logged out: show info
+    if (!isSignedIn) {
+      toast.info('Viewing sample portfolio');
       return;
     }
 
+    // Free user: run local analysis
+    if (!isPro) {
+      if (freeAssets.length === 0) {
+        toast.error('Add at least one asset to analyze');
+        return;
+      }
+      const analysis = analyzeFreePortfolio(freeAssets);
+      setFreeAnalysis(analysis);
+      toast.success('Portfolio analysis complete');
+      return;
+    }
+
+    // Pro user: create backend snapshot
     const placeholderAnalysis = {
       healthScore: BigInt(72),
       risks: [
@@ -83,30 +106,57 @@ export default function PortfolioPage() {
 
     createSnapshotMutation.mutate(placeholderAnalysis, {
       onSuccess: () => {
-        toast.success('Portfolio analysis complete');
-        setAnalysis(placeholderAnalysis);
+        toast.success('Portfolio snapshot saved');
       },
-      onError: () => {
-        toast.error('Failed to run analysis');
+      onError: (error: any) => {
+        if (error?.message?.includes('Pro upgrade required')) {
+          toast.error('Pro upgrade required to save portfolio');
+        } else {
+          toast.error('Failed to save portfolio snapshot');
+        }
       },
     });
   };
 
   const handleToggleEditor = () => {
-    // In demo mode, prompt sign-in when trying to add assets
-    if (!isSignedIn && !showEditor) {
-      requireSignIn('save a portfolio');
+    if (!isSignedIn) {
+      toast.info('Viewing sample portfolio');
       return;
     }
     setShowEditor(!showEditor);
   };
 
-  if (isSignedIn && isLoading) {
+  if (isLoading) {
     return <LoadingState />;
   }
 
-  // In demo mode, use sample data; when signed in, use real data
-  const displayData = isSignedIn ? (analysis || latestSnapshot) : DEMO_SNAPSHOT;
+  // Determine what data to display
+  let displayData: any = null;
+  
+  if (!isSignedIn) {
+    // Logged out: show demo
+    displayData = DEMO_SNAPSHOT;
+  } else if (!isPro) {
+    // Free user: show local analysis or empty state
+    if (freeAnalysis) {
+      displayData = {
+        assets: freeAssets.map(a => ({
+          id: BigInt(a.id),
+          name: a.name,
+          ticker: a.ticker,
+          allocation: BigInt(a.allocation),
+          timeHorizon: a.timeHorizon,
+          averageEntryPrice: a.averageEntryPrice ? BigInt(Math.floor(a.averageEntryPrice * 100)) : null,
+        })),
+        healthScore: BigInt(freeAnalysis.healthScore),
+        risks: freeAnalysis.risks,
+        opportunities: freeAnalysis.opportunities,
+      };
+    }
+  } else {
+    // Pro user: show latest snapshot
+    displayData = latestSnapshot;
+  }
 
   return (
     <div className="space-y-6">
@@ -116,35 +166,79 @@ export default function PortfolioPage() {
             <h1 className="text-3xl font-bold tracking-tight">Portfolio Health Check</h1>
             {!isSignedIn && <DemoStateIndicator />}
           </div>
-          <p className="text-muted-foreground">Simple summary of your portfolio status</p>
+          <p className="text-muted-foreground">
+            {!isSignedIn 
+              ? 'Sample portfolio preview' 
+              : !isPro 
+                ? 'Analyze up to 3 assets (no saving or history)'
+                : 'Track and save your portfolio over time'
+            }
+          </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleToggleEditor}>
-            <Plus className="mr-2 h-4 w-4" />
-            {showEditor ? 'Hide Editor' : isSignedIn ? 'Add Assets' : 'Sign In to Add'}
-          </Button>
-          <Button onClick={handleRunAnalysis} disabled={createSnapshotMutation.isPending}>
-            <TrendingUp className="mr-2 h-4 w-4" />
-            {createSnapshotMutation.isPending ? 'Analyzing...' : isSignedIn ? 'Run Health Check' : 'Sign In to Save'}
-          </Button>
+          {isSignedIn && (
+            <>
+              <Button variant="outline" onClick={handleToggleEditor}>
+                <Plus className="mr-2 h-4 w-4" />
+                {showEditor ? 'Hide Editor' : isPro ? 'Add Assets' : 'Manage Assets'}
+              </Button>
+              <Button 
+                onClick={handleRunAnalysis} 
+                disabled={createSnapshotMutation.isPending}
+              >
+                <TrendingUp className="mr-2 h-4 w-4" />
+                {createSnapshotMutation.isPending ? 'Analyzing...' : isPro ? 'Run & Save Health Check' : 'Run Health Check'}
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
-      {showEditor && isSignedIn && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Asset Editor</CardTitle>
-            <CardDescription>Add and manage your portfolio assets</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <AssetEditor />
+      {/* Free user upgrade prompt */}
+      {isSignedIn && !isPro && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Lock className="h-5 w-5 text-primary" />
+                <div>
+                  <h3 className="text-lg font-semibold mb-1">Upgrade to Pro</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Save portfolios, track changes over time, and enable alerts
+                  </p>
+                </div>
+              </div>
+              <Button onClick={() => navigate({ to: '/library' })}>
+                Upgrade to Pro
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}
 
+      {/* Asset Editor */}
+      {showEditor && isSignedIn && (
+        <>
+          {isPro ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Asset Editor</CardTitle>
+                <CardDescription>Add and manage your portfolio assets</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AssetEditor />
+              </CardContent>
+            </Card>
+          ) : (
+            <FreeAssetEditor assets={freeAssets} onAssetsChange={setFreeAssets} />
+          )}
+        </>
+      )}
+
+      {/* Portfolio Analysis Display */}
       {displayData && (
         <div className="space-y-6">
-          {/* Main Portfolio Health Score (0-100) with Standardized Presentation */}
+          {/* Main Portfolio Health Score */}
           <Card className="border-primary/20">
             <CardHeader>
               <CardTitle>Portfolio Health Score</CardTitle>
@@ -199,35 +293,43 @@ export default function PortfolioPage() {
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Eye className="h-5 w-5 text-primary" />
-                  <CardTitle className="text-base">What to monitor next</CardTitle>
+                  <CardTitle className="text-base">Watch next</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  {displayData.risks[1] || 'Monitor market conditions regularly'}
+                  {displayData.risks[1] || displayData.opportunities[1] || 'Monitor market conditions'}
                 </p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Current Holdings */}
+          {/* Assets List */}
           {displayData.assets && displayData.assets.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Current Holdings</CardTitle>
-                <CardDescription>{displayData.assets.length} asset{displayData.assets.length !== 1 ? 's' : ''} in portfolio</CardDescription>
+                <CardTitle>Portfolio Assets</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {displayData.assets.map((asset: any) => (
-                    <div key={Number(asset.id)} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <div
+                      key={Number(asset.id)}
+                      className="flex items-center justify-between p-3 border border-border rounded-lg"
+                    >
                       <div>
-                        <p className="font-medium">{asset.name}</p>
-                        <p className="text-sm text-muted-foreground">{asset.ticker}</p>
+                        <div className="font-medium">{asset.name}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {asset.ticker} • {asset.timeHorizon}
+                        </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">{Number(asset.allocation)}%</p>
-                        <p className="text-xs text-muted-foreground">{asset.timeHorizon}</p>
+                        <div className="font-semibold">{Number(asset.allocation)}%</div>
+                        {asset.averageEntryPrice && (
+                          <div className="text-sm text-muted-foreground">
+                            Entry: ${(Number(asset.averageEntryPrice) / 100).toFixed(2)}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -235,7 +337,62 @@ export default function PortfolioPage() {
               </CardContent>
             </Card>
           )}
+
+          {/* Full Risk & Opportunity Lists */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                  Risks
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {displayData.risks.map((risk: string, i: number) => (
+                    <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <span className="text-destructive mt-1">•</span>
+                      <span>{risk}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                  Opportunities
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {displayData.opportunities.map((opp: string, i: number) => (
+                    <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <span className="text-green-500 mt-1">•</span>
+                      <span>{opp}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
         </div>
+      )}
+
+      {/* Empty state for free users */}
+      {isSignedIn && !isPro && !freeAnalysis && (
+        <Card>
+          <CardHeader>
+            <CardTitle>No Analysis Yet</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Add assets and run a health check to see your portfolio analysis.
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
